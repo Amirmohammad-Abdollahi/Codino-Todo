@@ -1,0 +1,707 @@
+.modal-wrapper {
+  position: fixed;
+  inset: 0; /* ← این خط خیلی مهمه */
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  pointer-events: none;
+  display: flex;
+}
+
+/* فقط وقتی مودال بازه نمایش داده بشه */
+.modal-wrapper[data-modal="show"] {
+  pointer-events: all;
+}
+
+.modal-content {
+  position: relative;
+  width: min(92vw, 420px);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: var(--blur-glass);
+  z-index: var(--z-modal);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* وقتی مودال باز میشه */
+.modal-wrapper[data-modal="show"] .modal-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.modal-header h3 {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close svg {
+  width: 24px;
+  height: 24px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  position: relative;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.form-group label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: var(--text-md);
+  transition: border-color var(--transition-fast);
+}
+
+.form-group textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+  outline: none;
+}
+
+.form-group .btnPriority,
+.form-group .btnStatus {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: var(--text-md);
+  transition: border-color var(--transition-fast);
+  z-index: 1001;
+}
+
+.form-group .btnPriority:focus,
+.form-group .btnStatus:focus {
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+  outline: none;
+}
+
+.dropdownPriority,
+.dropdownStatus {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  z-index: 1000;
+  background-color: var(--bg-primary);
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--glass-border);
+  transform: scale(0.8);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 400ms ease;
+  text-align: center;
+}
+
+[data-dropdown="show"] .dropdownPriority {
+  top: 100%;
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+[data-dropdown="show"] .dropdownStatus {
+  top: 100%;
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.dropdownPriority p,
+.dropdownStatus p {
+  transition: all 350ms ease;
+}
+
+.dropdownPriority p:hover,
+.dropdownStatus p:hover {
+  background-color: var(--primary);
+  border-radius: calc(12px - 0.5rem);
+  padding: 0.5rem 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.char-count {
+  font-size: var(--text-xs);
+  text-align: right;
+  margin-top: 2px;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.char-count[data-title-error="yes"],
+.char-count[data-description-error="yes"] {
+  color: var(--accent-red);
+  font-weight: 600;
+}
+
+/* ==========================
+   Date Picker
+========================== */
+
+.date-picker {
+  position: relative;
+  width: 100%;
+}
+
+/*==========================
+Input
+==========================*/
+
+.date-picker__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.date-picker__input {
+  padding-right: 48px !important;
+  cursor: pointer;
+  user-select: none;
+}
+
+.date-picker__toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  translate: 0 -50%;
+
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border: none;
+  background: transparent;
+
+  color: var(--text-secondary);
+
+  border-radius: var(--radius-md);
+
+  cursor: pointer;
+
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.date-picker__toggle:hover {
+  background: var(--bg-primary);
+  color: var(--primary);
+}
+
+.date-picker__toggle:active {
+  transform: scale(0.94);
+}
+
+.date-picker__toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+/*==========================
+Panel
+==========================*/
+
+.date-picker__panel {
+  position: absolute;
+
+  left: 110% !important;
+  top: -350% !important;
+
+  width: 320px;
+
+  background: var(--glass);
+
+  border: 1px solid var(--glass-border);
+
+  border-radius: var(--radius-xl);
+
+  backdrop-filter: var(--blur-glass);
+
+  box-shadow: var(--shadow-lg);
+
+  overflow: hidden;
+
+  z-index: 100;
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  transform: translateY(10px) scale(0.98);
+
+  transition:
+    opacity var(--transition-normal),
+    transform var(--transition-normal),
+    visibility var(--transition-normal);
+}
+
+/* Open */
+
+.date-picker__panel.is-open {
+  opacity: 1;
+
+  visibility: visible;
+
+  transform: translateY(0) scale(1);
+}
+
+/*==========================
+Header
+==========================*/
+
+.date-picker__header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 14px;
+
+  border-bottom: 1px solid var(--border-color);
+}
+
+.date-picker__title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+}
+
+.date-picker__month-trigger,
+.date-picker__year-trigger {
+  border: none;
+
+  background: none;
+
+  padding: 6px 10px;
+
+  border-radius: var(--radius-md);
+
+  cursor: pointer;
+
+  color: var(--text-primary);
+
+  font-weight: 700;
+
+  transition: all var(--transition-fast);
+}
+
+.date-picker__month-trigger:hover,
+.date-picker__year-trigger:hover {
+  background: var(--bg-primary);
+}
+
+.date-picker__nav {
+  width: 34px;
+
+  height: 34px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: none;
+
+  border-radius: var(--radius-md);
+
+  background: none;
+
+  color: var(--text-secondary);
+
+  cursor: pointer;
+
+  transition: all var(--transition-fast);
+}
+
+.date-picker__nav:hover {
+  background: var(--bg-primary);
+
+  color: var(--primary);
+}
+
+.date-picker__nav svg {
+  width: 18px;
+
+  height: 18px;
+}
+
+/*==========================
+Week
+==========================*/
+
+.date-picker__weekdays {
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  padding: 12px;
+
+  gap: 4px;
+
+  border-bottom: 1px solid var(--border-color);
+}
+
+.date-picker__weekdays span {
+  text-align: center;
+
+  color: var(--text-muted);
+
+  font-size: var(--text-xs);
+
+  font-weight: 700;
+}
+
+/*==========================
+Days
+==========================*/
+
+.date-picker__days {
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  gap: 4px;
+
+  padding: 12px;
+}
+
+/* هر روز */
+
+.date-picker__day {
+  aspect-ratio: 1;
+
+  display: grid;
+
+  place-items: center;
+
+  border: none;
+
+  background: transparent;
+
+  color: var(--text-primary);
+
+  border-radius: var(--radius-md);
+
+  cursor: pointer;
+
+  transition: all var(--transition-fast);
+}
+
+.date-picker__day:hover {
+  background: var(--bg-primary);
+}
+
+.date-picker__day:focus-visible {
+  outline: none;
+
+  box-shadow: var(--focus-ring);
+}
+
+/* امروز */
+
+.date-picker__day.is-today {
+  border: 1px solid var(--primary);
+
+  font-weight: 700;
+}
+
+/* انتخاب شده */
+
+.date-picker__day.is-selected {
+  background: var(--gradient-primary);
+
+  color: white;
+}
+
+/* خارج از ماه */
+
+.date-picker__day.is-outside {
+  color: var(--text-muted);
+
+  opacity: 0.45;
+}
+
+/* غیرفعال */
+
+.date-picker__day:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.25;
+}
+
+/*==========================
+Months
+==========================*/
+
+.date-picker__months {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 8px;
+
+  padding: 16px;
+}
+
+.date-picker__month {
+  border: none;
+
+  background: transparent;
+
+  border-radius: var(--radius-md);
+
+  padding: 12px;
+
+  cursor: pointer;
+
+  color: var(--text-primary);
+
+  transition: all var(--transition-fast);
+}
+
+.date-picker__month:hover {
+  background: var(--bg-primary);
+}
+
+.date-picker__month.is-selected {
+  background: var(--gradient-primary);
+
+  color: white;
+}
+
+/*==========================
+Years
+==========================*/
+
+.date-picker__years {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 8px;
+
+  padding: 16px;
+
+  max-height: 250px;
+
+  overflow: auto;
+}
+
+.date-picker__year {
+  border: none;
+
+  background: transparent;
+
+  border-radius: var(--radius-md);
+
+  padding: 12px;
+
+  cursor: pointer;
+
+  color: var(--text-primary);
+
+  transition: all var(--transition-fast);
+}
+
+.date-picker__year:hover {
+  background: var(--bg-primary);
+}
+
+.date-picker__year.is-selected {
+  background: var(--gradient-primary);
+
+  color: white;
+}
+
+/*==========================
+Footer
+==========================*/
+
+.date-picker__footer {
+  display: flex;
+
+  gap: 10px;
+
+  padding: 14px;
+
+  border-top: 1px solid var(--border-color);
+}
+
+.date-picker__today,
+.date-picker__clear {
+  flex: 1;
+
+  border: none;
+
+  cursor: pointer;
+
+  padding: 10px;
+
+  border-radius: var(--radius-md);
+
+  background: var(--bg-primary);
+
+  color: var(--text-primary);
+
+  transition: all var(--transition-fast);
+}
+
+.date-picker__today:hover {
+  background: var(--primary);
+
+  color: white;
+}
+
+.date-picker__clear:hover {
+  background: var(--accent-red);
+
+  color: white;
+}
+
+/*==========================
+Scrollbar
+==========================*/
+
+.date-picker__years::-webkit-scrollbar {
+  width: 8px;
+}
+
+.date-picker__years::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+
+  border-radius: 999px;
+}
+
+/*==========================
+Responsive
+==========================*/
+
+@media (max-width: 520px) {
+  .date-picker__panel {
+    width: 100%;
+
+    min-width: unset;
+  }
+}
+
+/* دکمه‌ها */
+.modal-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+  font-weight: 700;
+}
+
+/* بک‌دراپ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: var(--z-modal-backdrop);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+/* وقتی مودال بازه بک‌دراپ هم نمایش داده بشه */
+.modal-wrapper[data-modal="show"] .modal-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.date-picker__panel.is-top {
+  top: auto;
+  bottom: calc(100% + 12px);
+}

@@ -1,0 +1,345 @@
+/* ================== هدر ================== */
+.app-header {
+  align-items: center;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-shrink: 0;
+  justify-content: space-between;
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+/* Greeting */
+.header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Panel (Widgets container) */
+.header-panel {
+  align-items: center;
+  background-color: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--radius-2xl) - 1rem);
+  display: flex;
+  height: 5.5rem;
+  overflow: hidden;
+  padding: var(--spacing-sm) var(--spacing-md);
+  position: relative;
+  z-index: 2;
+  backdrop-filter: var(--blur-glass);
+}
+
+.header-panel::before,
+.header-panel::after {
+  background-image: linear-gradient(
+    125deg,
+    var(--primary),
+    var(--accent-purple)
+  );
+  border-radius: 50%;
+  content: "";
+  filter: blur(1.7rem);
+  height: 50px;
+  position: absolute;
+  width: 50px;
+  z-index: 1;
+}
+
+.header-panel::before {
+  bottom: -2.5rem;
+  left: -2.5rem;
+}
+
+.header-panel::after {
+  right: -2.5rem;
+  top: -2.5rem;
+}
+
+/* ================== هدر ویجت‌ها (Header Widgets) - BEM ================== */
+.header-widget {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  padding: 0 var(--spacing-md);
+}
+
+.header-widget:not(:last-child) {
+  border-right: 2px solid var(--glass-border);
+}
+
+/* BEM Elements */
+.header-widget__icon {
+  color: var(--primary);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-widget__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  justify-content: center;
+  margin-left: var(--spacing-sm);
+}
+
+.header-widget__value {
+  color: var(--text-primary);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.header-widget__label {
+  color: var(--text-opacity);
+  font-size: var(--text-xs);
+}
+
+/* ================== پروفایل ================== */
+.profile {
+  flex-shrink: 0;
+  height: 4rem;
+  position: relative;
+  width: 4rem;
+  margin-left: var(--spacing-md);
+}
+
+.profile img {
+  border-radius: var(--radius-round);
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  pointer-events: none;
+}
+
+.profile::after {
+  background: linear-gradient(110deg, var(--accent-green), var(--success));
+  border-radius: 50%;
+  bottom: 4px;
+  box-shadow: 0 0 0 4px var(--bg-primary);
+  content: "";
+  height: 14px;
+  position: absolute;
+  right: 4px;
+  width: 14px;
+  z-index: 2;
+  transition: box-shadow 0.3s ease;
+}
+
+/* ================== تم (Theme Toggle) ================== */
+.theme-widget {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-right: var(--spacing-md);
+}
+
+.theme-toggle {
+  cursor: pointer;
+}
+
+.theme-switch {
+  align-items: center;
+  background-color: var(--border-color);
+  border-radius: 100px;
+  box-shadow:
+    inset 2px 2px 4px -2px rgba(255, 255, 255, 0.5),
+    inset -2px -2px 4px -2px rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
+  display: flex;
+  gap: var(--spacing-sm);
+  height: 2.5rem;
+  justify-content: space-between;
+  padding: 0.35rem 0.5rem;
+  position: relative;
+  width: 5.25rem;
+}
+
+.theme-thumb {
+  background-color: var(--primary);
+  border-radius: 50%;
+  box-shadow:
+    inset 2px 2px 4px -2px rgba(255, 255, 255, 0.5),
+    inset -2px -2px 4px -2px rgba(0, 0, 0, 0.5);
+  height: calc(2.5rem - 0.4rem);
+  left: 5.5px;
+  position: absolute;
+  transition: transform var(--transition-slow);
+  width: calc(2.5rem - 0.4rem);
+  z-index: 0;
+}
+
+[data-theme="dark"] .theme-thumb {
+  transform: translateX(112.5%);
+}
+
+.theme-icon {
+  height: 90%;
+  transition: color var(--transition-slow);
+  width: 90%;
+  z-index: 1;
+}
+
+.theme-icon svg {
+  height: 100%;
+  width: 100%;
+}
+
+[data-theme="light"] .theme-icon--sun {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .theme-icon--moon {
+  color: #ffffff;
+}
+
+/* ================== تاریخ و ساعت (Date & Time Widgets) ================== */
+.date-widget,
+.time-widget {
+  color: var(--text-primary);
+  gap: calc(var(--spacing-xs) - 0.2rem);
+}
+
+.date-widget .header-widget__icon,
+.time-widget .header-widget__icon {
+  width: 50px;
+  height: 50px;
+}
+
+/* ================== استریک (Streak Widget) ================== */
+.streak-widget {
+  color: var(--text-primary);
+}
+
+.streak-widget .header-widget__icon {
+  width: 48px;
+  height: 48px;
+  color: var(--accent-orange);
+}
+
+.streak-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.streak-value {
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+.streak-label {
+  color: var(--text-opacity);
+  font-size: var(--text-xs);
+}
+
+/* ================== پیشرفت (Progress Widget) ================== */
+.progress-widget {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+}
+
+.progress-circle {
+  position: relative;
+  height: 80px;
+  width: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.progress-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-bg {
+  fill: none;
+  stroke: var(--bg-secondary);
+  stroke-width: 8;
+}
+
+.progress-value {
+  fill: none;
+  stroke: url(#progressGradient);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease;
+}
+
+.progress-text {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.progress-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.progress-label {
+  color: var(--text-opacity);
+  font-size: var(--text-xs);
+}
+
+/* ================== آیکون‌های SVG در هدر ================== */
+.header-widget__icon svg,
+.header-widget__icon object {
+  width: 100%;
+  height: 100%;
+}
+
+/* استایل خاص برای آیکون fire */
+.streak-widget .header-widget__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* سمت چپ هدر */
+.greeting-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.greeting-title h2 {
+  display: flex;
+  align-items: center;
+  background-image: linear-gradient(135deg, #ffe66d, #ffb347, #ff5ea8, #7c4dff);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.greeting-title img {
+  width: 3rem;
+  height: 3rem;
+}
+
+.greeting-subtitle {
+  background-image: linear-gradient(135deg, #ffe66d, #ffb347, #ff5ea8, #7c4dff);
+  background-clip: text;
+  -webkit-text-fill-color: var(--text-opacity);
+}
