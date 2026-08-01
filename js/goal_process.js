@@ -73,6 +73,40 @@ function getRemainingTime(deadline) {
 
   return `${minutes} minute${minutes > 1 ? "s" : ""} left`;
 }
+function getTimePast(time) {
+  const orgTime = new Date(time);
+  const now = new Date();
+
+  if (orgTime > now) {
+    return "Error Time";
+  }
+
+  let minute = now.getMinutes() - orgTime.getMinutes();
+  let hour = now.getHours() - orgTime.getHours();
+  let day = now.getDate() - orgTime.getDate();
+  let months = now.getMonth() - orgTime.getMonth();
+  let year = now.getFullYear() - orgTime.getFullYear();
+
+  if (minute < 60) {
+    return `${minute} minute left`;
+  }
+
+  if (minute > 60 && hour < 24) {
+    return `${hour} hour left`;
+  }
+
+  if (minute > 60 && hour > 24 && day < 30) {
+    return `${day} day left`;
+  }
+
+  if (minute > 60 && hour > 24 && day > 30 && months < 12) {
+    return `${months} months left`;
+  }
+
+  if (minute > 60 && hour > 24 && day > 30 && months > 12) {
+    return `${year} year left`;
+  }
+}
 
 const priorityClass = ["High", "Medium", "Low"];
 const statusClass = ["Pending", "Progress", "Completed"];
@@ -89,8 +123,8 @@ goalForm.addEventListener("submit", async (e) => {
     object_goal.goal_title.textContent = result.data.title;
     object_goal.goal_subtitle.textContent = result.data.description;
     object_goal.deadline.textContent = getRemainingTime(result.data.deadLine);
-    object_goal.deadline_footer.textContent = getRemainingTime(
-      result.data.deadLine,
+    object_goal.deadline_footer.textContent = getTimePast(
+      result.data.updated_at,
     );
     priorityClass.forEach((item) => {
       object_goal.priority.classList.remove(item);
