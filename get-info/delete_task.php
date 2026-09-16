@@ -1,5 +1,4 @@
 <?php
-
 header("Content-Type: application/json");
 
 require_once "../php-sql/config.php";
@@ -14,7 +13,7 @@ function Response(bool $success, string $message = ""): void
 
 $data = json_decode(file_get_contents("php://input"), true);
 if (!isset($data["id"])) {
-	Response(false, "undifined",);
+	Response(false, "Task undifined",);
 }
 
 $id_task = $data["id"];

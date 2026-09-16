@@ -1,0 +1,1259 @@
+.focus-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.focus-title-box {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.focus-title h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.focus-title p {
+  font-size: 0.75rem;
+  color: var(--text-opacity);
+  font-weight: 300;
+}
+
+.focus-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-yellow);
+  background: linear-gradient(145deg,
+      color-mix(in srgb, var(--accent-yellow) 18%, transparent),
+      color-mix(in srgb, var(--primary) 7%, transparent));
+  border: 1px solid color-mix(in srgb, var(--accent-yellow) 22%, var(--glass-border));
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 16px color-mix(in srgb, var(--accent-yellow) 7%, transparent);
+  overflow: hidden;
+  width: 46px;
+  height: 46px;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.focus-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.focus-settings-btn {
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--glass);
+  padding: 0.4rem 0.8rem;
+  justify-content: center;
+  border: 1px solid var(--glass-border);
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.focus-settings-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ========================================
+   FOCUS BUTTONS
+======================================== */
+
+.focus-buttons {
+  width: 100%;
+}
+
+/* ========================================
+   BUTTON GROUPS
+======================================== */
+
+.focus-buttons-stop,
+.focus-buttons-active {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.focus-buttons-stop {
+  justify-content: space-between;
+}
+
+.focus-buttons-active {
+  display: none;
+}
+
+/* ========================================
+   COMMON BUTTON
+======================================== */
+
+.focus-start-btn,
+.focus-reset-btn,
+.focus-stop-btn,
+.focus-pause-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+
+  cursor: pointer;
+
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+/* ========================================
+   BUTTON ICONS
+======================================== */
+
+.focus-start-btn svg,
+.focus-reset-btn svg,
+.focus-stop-btn svg,
+.focus-pause-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* ========================================
+   START BUTTON
+======================================== */
+
+.focus-start-btn {
+  flex: 1;
+
+  padding-block: 0.7rem;
+
+  background: var(--gradient-primary);
+  color: #fff;
+
+  font-size: var(--text-md);
+  font-weight: 500;
+
+  box-shadow: var(--shadow-sm);
+}
+
+/* ========================================
+   RESET BUTTON
+======================================== */
+
+.focus-reset-btn {
+  padding: 0.7rem var(--spacing-xl);
+
+  background: var(--glass-border);
+  color: var(--text-primary);
+
+  border-color: var(--border-color);
+
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+/* ========================================
+   STOP BUTTON
+======================================== */
+
+.focus-stop-btn {
+  flex: 1;
+
+  padding: 0.7rem var(--spacing-xl);
+
+  background: var(--accent-red-opacity);
+  color: var(--accent-red);
+
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+/* ========================================
+   PAUSE / RESUME BUTTON
+======================================== */
+
+.focus-pause-btn {
+  flex: 1;
+
+  padding: 0.7rem var(--spacing-xl);
+
+  background: var(--gradient-primary);
+  color: #fff;
+
+  font-size: var(--text-sm);
+  font-weight: 500;
+
+  box-shadow: var(--shadow-sm);
+}
+
+/* ========================================
+   GRADIENT BUTTON CONTENT
+======================================== */
+
+.focus-start-btn,
+.focus-pause-btn {
+  color: #fff;
+}
+
+.focus-start-btn svg,
+.focus-pause-btn svg {
+  color: #fff;
+}
+
+/* ========================================
+   PAUSE / RESUME ICON
+======================================== */
+
+.focus-resume-icon {
+  display: none;
+}
+
+/* ========================================
+   HOVER
+======================================== */
+
+.focus-start-btn:hover,
+.focus-reset-btn:hover,
+.focus-stop-btn:hover,
+.focus-pause-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* ========================================
+   ACTIVE
+======================================== */
+
+.focus-start-btn:active,
+.focus-reset-btn:active,
+.focus-stop-btn:active,
+.focus-pause-btn:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   FOCUS
+======================================== */
+
+.focus-start-btn:focus-visible,
+.focus-reset-btn:focus-visible,
+.focus-stop-btn:focus-visible,
+.focus-pause-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* ========================================
+   DISABLED
+======================================== */
+
+.focus-start-btn:disabled,
+.focus-reset-btn:disabled,
+.focus-stop-btn:disabled,
+.focus-pause-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+/* ========================================
+   STATE: STOP
+======================================== */
+
+.focus-buttons[data-state="stop"] .focus-buttons-stop {
+  display: flex;
+}
+
+.focus-buttons[data-state="stop"] .focus-buttons-active {
+  display: none;
+}
+
+/* ========================================
+   STATE: START
+======================================== */
+
+.focus-buttons[data-state="start"] .focus-buttons-stop {
+  display: none;
+}
+
+.focus-buttons[data-state="start"] .focus-buttons-active {
+  display: flex;
+}
+
+/* ========================================
+   STATE: PENDING
+======================================== */
+
+.focus-buttons[data-state="pending"] .focus-buttons-stop {
+  display: none;
+}
+
+.focus-buttons[data-state="pending"] .focus-buttons-active {
+  display: flex;
+}
+
+.focus-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.focus-timer {
+  --size: 172px;
+
+  width: var(--size);
+  height: var(--size);
+
+  position: relative;
+
+  display: grid;
+  place-items: center;
+}
+
+.focus-ring {
+  width: 100%;
+  height: 100%;
+
+  transform: rotate(-90deg);
+}
+
+.focus-ring-bg {
+  fill: none;
+  stroke: var(--border-color);
+  stroke-width: 7px;
+}
+
+.focus-ring-progress {
+  fill: none;
+
+  stroke: url(#focus-gradient);
+
+  stroke-width: 7;
+
+  stroke-linecap: round;
+
+  filter: url(#focus-glow);
+
+  /*
+        محیط دایره تقریباً:
+
+        2 × π × 82
+        ≈ 515
+
+        بنابراین این مقدار برای dasharray استفاده می‌شود.
+    */
+
+  stroke-dasharray: 515;
+
+  stroke-dashoffset: 0;
+
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.focus-time {
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+  font-weight: 600;
+
+  font-variant-numeric: tabular-nums;
+
+  color: var(--text-primary);
+
+  user-select: none;
+}
+
+.focus-task {
+  width: 100%;
+  height: 4rem;
+  border-radius: 8px;
+  background-color: var(--bg-surface);
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--bg-surface-hover);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 1.1rem;
+  font-weight: 400;
+  box-shadow: 1px 1px 6px -2px var(--divider);
+}
+
+.focus-info {
+  display: flex;
+  height: 100%;
+  width: 72%;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+/* ========================================
+   FOCUS SESSION MODAL
+======================================== */
+
+.focus-session-modal {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--spacing-xl);
+
+  z-index: var(--z-modal);
+
+  overflow: hidden;
+  transition: all 300ms ease;
+}
+
+/* ========================================
+   BACKDROP
+======================================== */
+
+.focus-session-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background: var(--overlay);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 300ms ease;
+}
+
+.focus-session-modal[data-view="hide"] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+[data-view="hide"] .focus-session-backdrop {
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  background: transparent;
+}
+
+/* ========================================
+   CARD
+======================================== */
+
+.focus-session-card {
+  position: relative;
+
+  width: min(100%, 480px);
+
+  padding: var(--spacing-2xl);
+
+  background: var(--glass);
+
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+
+  box-shadow: var(--shadow-xl);
+
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+
+  z-index: 1;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.focus-session-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--spacing-lg);
+
+  margin-bottom: var(--spacing-2xl);
+}
+
+.focus-session-title-box {
+  display: flex;
+  align-items: center;
+
+  gap: var(--spacing-md);
+
+  min-width: 0;
+}
+
+/* ========================================
+   ICON
+======================================== */
+
+.focus-session-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 42px;
+
+  background: var(--overlay);
+
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+
+  box-shadow: 0 0 20px rgb(59 130 246 / 0.14);
+}
+
+.focus-session-icon-svg {
+  width: 24px;
+  height: 24px;
+
+  display: block;
+
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 75%, transparent)) drop-shadow(0 0 9px color-mix(in srgb, var(--accent-purple) 45%, transparent));
+}
+
+/* ========================================
+   TITLE
+======================================== */
+
+.focus-session-title-content {
+  min-width: 0;
+}
+
+.focus-session-title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: var(--text-xl);
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+.focus-session-description {
+  margin: 4px 0 0;
+
+  color: var(--text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.4;
+}
+
+/* ========================================
+   CLOSE
+======================================== */
+
+.focus-session-close {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 34px;
+
+  padding: 0;
+
+  color: var(--text-muted);
+
+  background: var(--overlay);
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+
+  font-size: 1.4rem;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.focus-session-close:hover {
+  color: var(--text-primary);
+
+  background: var(--overlay-hover);
+
+  border-color: var(--glass-border);
+
+  transform: rotate(90deg);
+}
+
+.focus-session-close:focus-visible {
+  outline: none;
+
+  border-color: var(--primary);
+
+  box-shadow: var(--focus-ring);
+}
+
+/* ========================================
+   FORM
+======================================== */
+
+.focus-session-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--spacing-xl);
+}
+
+/* ========================================
+   SECTION
+======================================== */
+
+.focus-session-section {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--spacing-md);
+}
+
+.focus-session-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--spacing-md);
+}
+
+.focus-session-label {
+  color: var(--text-primary);
+
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.focus-session-required,
+.focus-session-duration-hint {
+  color: var(--text-muted);
+
+  font-size: var(--text-xs);
+}
+
+/* ========================================
+   TASK SELECT
+======================================== */
+
+.focus-task-input-box {
+  position: relative;
+}
+
+.focus-session-task-select {
+  position: relative;
+  width: 100%;
+  min-height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--spacing-md);
+
+  padding: var(--spacing-md) var(--spacing-lg);
+
+  color: var(--text-secondary);
+
+  background: var(--bg-surface);
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.focus-task-dropdown {
+  position: absolute;
+  display: block;
+  background: var(--bg-surface-hover);
+  border-radius: 10px;
+  z-index: 1000;
+  box-shadow: 3px 2px 8px -3px #000000c0;
+  overflow-y: auto;
+  border: 1px solid var(--glass-border);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 0;
+  width: 0;
+  transform: translateY(0%) scale(0.8) rotateY(90deg) rotateX(90deg);
+  opacity: 0;
+  transition: all 400ms ease;
+}
+
+.focus-task-dropdown[data-dropdown="show"] {
+  opacity: 1;
+  width: 100%;
+  transform: translateY(8px);
+  max-height: 15rem;
+}
+
+/* ======================================
+   Scrollbar
+	====================================== */
+
+.focus-task-dropdown::-webkit-scrollbar {
+  width: var(--spacing-xs);
+}
+
+.focus-task-dropdown::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+
+.focus-task-dropdown::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: var(--radius-round);
+
+  cursor: -webkit-grab;
+}
+
+.focus-task-dropdown::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient-primary);
+}
+
+.select-focus-task-dropdown {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--gradient-surface);
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  cursor: pointer;
+  box-shadow: 1px 1px 8px -3px #000000;
+  backdrop-filter: blur(60px);
+}
+
+.focus-session-task-select:hover {
+  background: var(--bg-surface-hover);
+
+  border-color: var(--primary);
+}
+
+.focus-session-task-select:focus-visible {
+  outline: none;
+
+  border-color: var(--primary);
+
+  box-shadow: var(--focus-ring);
+}
+
+.focus-session-task-placeholder {
+  overflow: hidden;
+
+  color: var(--text-muted);
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.focus-session-task-arrow {
+  color: var(--text-muted);
+
+  font-size: var(--text-lg);
+
+  transition:
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.focus-session-task-select:hover .focus-session-task-arrow {
+  color: var(--primary);
+
+  transform: translateX(3px);
+}
+
+.header-select-focus-dropdown {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+#close-select-task-btn {
+  font-size: 1rem;
+  background: var(--divider);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  box-shadow: 2px 2px 10px -4px #000000;
+}
+
+/* ========================================
+   DURATION PICKER
+======================================== */
+
+.focus-session-duration-picker {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+
+  align-items: center;
+
+  gap: var(--spacing-sm);
+}
+
+/* ========================================
+   WHEEL
+======================================== */
+
+.focus-session-wheel {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--spacing-sm);
+}
+
+.focus-session-wheel-label {
+  color: var(--text-muted);
+
+  font-size: var(--text-xs);
+  font-weight: 600;
+
+  text-align: center;
+}
+
+/* ========================================
+   WHEEL VIEWPORT
+======================================== */
+
+.focus-session-wheel-viewport {
+  --wheel-item-height: 32px;
+  --wheel-visible-items: 5;
+
+  position: relative;
+
+  height: calc(var(--wheel-item-height) * var(--wheel-visible-items));
+
+  overflow: hidden;
+
+  background: var(--bg-surface);
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+
+  cursor: grab;
+
+  user-select: none;
+
+  /*
+		Allow vertical touch scrolling
+		while still allowing JS pointer
+		drag later.
+	*/
+  touch-action: none;
+
+  overscroll-behavior: contain;
+
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.focus-session-wheel-viewport:hover {
+  border-color: var(--glass-border);
+}
+
+.focus-session-wheel-viewport:active {
+  cursor: grabbing;
+}
+
+/* ========================================
+   WHEEL LIST
+======================================== */
+
+.focus-session-wheel-list {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /*
+		Exactly enough space to put the
+		first and last item in the center.
+	*/
+  padding-block: calc((var(--wheel-item-height) * (var(--wheel-visible-items) - 1)) / 2);
+
+  overflow-y: auto;
+
+  scrollbar-width: none;
+
+  -ms-overflow-style: none;
+}
+
+.focus-session-wheel-list::-webkit-scrollbar {
+  display: none;
+}
+
+/* ========================================
+   WHEEL ITEM
+======================================== */
+
+.focus-session-wheel-item {
+  width: 100%;
+
+  height: var(--wheel-item-height);
+
+  flex: 0 0 var(--wheel-item-height);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  color: var(--text-muted);
+
+  background: transparent;
+
+  border: 0;
+
+  font-family: inherit;
+
+  font-size: 1.15rem;
+  font-weight: 500;
+
+  line-height: 1;
+
+  cursor: grab;
+
+  scroll-snap-align: center;
+
+  opacity: 0.22;
+
+  transform: scale(0.86);
+
+  transition: color 200ms ease;
+  user-select: none;
+
+  touch-action: none;
+  -webkit-user-drag: none;
+}
+
+/* ========================================
+   SELECTED
+======================================== */
+
+.focus-session-wheel-item.is-selected {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* ========================================
+   NEAR ITEMS
+======================================== */
+
+.focus-session-wheel-item.is-near {
+  color: var(--text-secondary);
+
+  opacity: 0.48;
+
+  transform: scale(0.94);
+}
+
+/* ========================================
+   FAR ITEMS
+======================================== */
+
+.focus-session-wheel-item.is-far {
+  color: var(--text-muted);
+
+  opacity: 0.18;
+
+  transform: scale(0.84);
+}
+
+/* ========================================
+   VERY FAR / DISABLED VISUAL
+======================================== */
+
+.focus-session-wheel-item.is-very-far {
+  opacity: 0.08;
+
+  transform: scale(0.78);
+}
+
+/* ========================================
+   NO BLUE SELECTION BOX
+======================================== */
+
+.focus-session-wheel-viewport::before {
+  display: none;
+}
+
+/* ========================================
+   TOP / BOTTOM FADE
+======================================== */
+
+.focus-session-wheel-viewport::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  z-index: 2;
+
+  background: linear-gradient(to bottom,
+
+      var(--bg-surface) 0%,
+
+      color-mix(in srgb, var(--bg-surface) 20%, transparent) 12%,
+
+      transparent 30%,
+
+      transparent 70%,
+
+      color-mix(in srgb, var(--bg-surface) 20%, transparent) 88%,
+
+      var(--bg-surface) 100%);
+}
+
+/* ========================================
+   SEPARATOR
+======================================== */
+
+.focus-session-time-separator {
+  align-self: center;
+
+  margin-top: 24px;
+
+  color: var(--text-muted);
+
+  font-size: var(--text-lg);
+
+  font-weight: 700;
+
+  user-select: none;
+}
+
+/* ========================================
+   SUBMIT
+======================================== */
+
+.focus-session-submit {
+  width: 100%;
+  min-height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--spacing-sm);
+
+  padding: var(--spacing-md) var(--spacing-lg);
+
+  color: #f2f2f2;
+
+  background: var(--gradient-primary);
+
+  border: 0;
+  border-radius: var(--radius-md);
+
+  font-size: var(--text-md);
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: 0 8px 24px rgb(59 130 246 / 0.2);
+
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    filter var(--transition-fast);
+}
+
+.focus-session-submit:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 12px 30px rgb(59 130 246 / 0.28);
+
+  filter: brightness(1.05);
+}
+
+.focus-session-submit:active {
+  transform: translateY(0);
+}
+
+.focus-session-submit:focus-visible {
+  outline: none;
+
+  box-shadow:
+    var(--focus-ring),
+    0 8px 24px rgb(59 130 246 / 0.2);
+}
+
+/* ========================================
+   SUBMIT ICON
+======================================== */
+
+.focus-session-submit-icon {
+  width: 20px;
+  height: 20px;
+
+  display: block;
+
+  flex-shrink: 0;
+}
+
+/* ========================================
+   EMPTY TASK MESSAGE
+======================================== */
+
+#focus-task-empty-message {
+  width: 100%;
+  min-height: 170px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.75rem;
+
+  padding: 1.5rem 1rem;
+
+  text-align: center;
+
+  background:
+    radial-gradient(circle at 50% 0%,
+      color-mix(in srgb, var(--primary) 10%, transparent),
+      transparent 60%),
+    var(--gradient-surface);
+
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-sm);
+
+  animation: focusTaskEmptyIn 300ms ease both;
+}
+
+/* ========================================
+   ICON
+======================================== */
+
+.focus-task-empty-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--radius-md);
+
+  color: var(--primary);
+
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--glass-border));
+
+  box-shadow: 0 0 20px color-mix(in srgb, var(--primary) 10%, transparent);
+
+  flex-shrink: 0;
+}
+
+.focus-task-empty-icon svg {
+  width: 23px;
+  height: 23px;
+
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--primary) 45%, transparent));
+}
+
+/* ========================================
+   CONTENT
+======================================== */
+
+.focus-task-empty-content {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 0.3rem;
+
+  max-width: 270px;
+}
+
+.focus-task-empty-content h4 {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-size: var(--text-sm);
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+.focus-task-empty-content p {
+  margin: 0;
+
+  color: var(--text-muted);
+
+  font-size: var(--text-xs);
+  font-weight: 400;
+
+  line-height: 1.7;
+}
+
+/* ========================================
+   ANIMATION
+======================================== */
+
+@keyframes focusTaskEmptyIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

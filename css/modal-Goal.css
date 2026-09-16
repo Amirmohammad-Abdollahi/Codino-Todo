@@ -1,6 +1,6 @@
 .modal-wrapper {
   position: fixed;
-  inset: 0; /* ← این خط خیلی مهمه */
+  inset: 0;
   align-items: center;
   justify-content: center;
   z-index: var(--z-modal);
@@ -639,18 +639,6 @@ Scrollbar
   background: var(--border-color);
 
   border-radius: 999px;
-}
-
-/*==========================
-Responsive
-==========================*/
-
-@media (max-width: 520px) {
-  .date-picker__panel {
-    width: 100%;
-
-    min-width: unset;
-  }
 }
 
 /* دکمه‌ها */

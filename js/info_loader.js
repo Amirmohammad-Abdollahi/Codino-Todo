@@ -1,5 +1,8 @@
 import { startStep, completeStep, finishLoader } from "./load-animation.js";
 import { goal_input_value } from "./export-input-value.js";
+import { load_note_mess } from "./note-item.js";
+
+localStorage.setItem("focus-state", "stop");
 
 //#region بخش کاربر
 
@@ -89,40 +92,28 @@ function getRemainingTime(deadline) {
 
   return `${minutes} minute${minutes > 1 ? "s" : ""} left`;
 }
+function getTimePast(date) {
+  const diff = Date.now() - new Date(date).getTime();
 
-function getTimePast(time) {
-  const orgTime = new Date(time);
-  const now = new Date();
+  const minute = Math.floor(diff / (1000 * 60));
+  const hour = Math.floor(diff / (1000 * 60 * 60));
+  const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const month = Math.floor(day / 30);
+  const year = Math.floor(day / 365);
 
-  if (orgTime > now) {
-    return "Error Time";
-  }
+  const rtf = new Intl.RelativeTimeFormat("en", {
+    numeric: "auto",
+  });
 
-  let minute = now.getMinutes() - orgTime.getMinutes();
-  let hour = now.getHours() - orgTime.getHours();
-  let day = now.getDate() - orgTime.getDate();
-  let months = now.getMonth() - orgTime.getMonth();
-  let year = now.getFullYear() - orgTime.getFullYear();
+  if (minute < 60) return rtf.format(-minute, "minute");
 
-  if (minute < 60) {
-    return `${minute} minute left`;
-  }
+  if (hour < 24) return rtf.format(-hour, "hour");
 
-  if (minute > 60 && hour < 24) {
-    return `${hour} hour left`;
-  }
+  if (day < 30) return rtf.format(-day, "day");
 
-  if (minute > 60 && hour > 24 && day < 30) {
-    return `${day} day left`;
-  }
+  if (month < 12) return rtf.format(-month, "month");
 
-  if (minute > 60 && hour > 24 && day > 30 && months < 12) {
-    return `${months} months left`;
-  }
-
-  if (minute > 60 && hour > 24 && day > 30 && months > 12) {
-    return `${year} year left`;
-  }
+  return rtf.format(-year, "year");
 }
 
 const priorityClass = ["High", "Medium", "Low"];
@@ -230,7 +221,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     goalObj.deadline.textContent = getRemainingTime(goal_result.data.deadLine);
 
-    goalObj.deadline_footer.textContent = getTimePast(goal_result.data.updated_at);
+    goalObj.deadline_footer.textContent = getTimePast(
+      goal_result.data.updated_at,
+    );
 
     priorityClass.forEach((item) => {
       goalObj.priority.classList.remove(item);
@@ -249,10 +242,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     goalObj.statusTxt.textContent = goal_result.data.status;
 
     completeStep("tasks");
+  } else {
+    const message_box = document.querySelector(".message-box-container");
+    const message_box_text = document.querySelector(".message-box-container p");
+    message_box_text.textContent = result.message;
+    message_box.dataset.view = "show";
+    if (message_box.dataset.view == "show") {
+      setInterval(() => {
+        message_box.dataset.view = "hide";
+      }, 5000);
+    }
   }
 
+  load_note_mess();
   completeStep("init");
   completeStep("ready");
+  document.querySelector(".focus-task p").textContent =
+    localStorage.getItem("focus-task");
   finishLoader();
 
   const streakDaysjson = await fetch("get-info/get_streak.php");
@@ -261,6 +267,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (streakDays.success) {
     streakObj.streakTime.textContent = streakDate(streakDays.data.created_at);
+  } else {
+    const message_box = document.querySelector(".message-box-container");
+    const message_box_text = document.querySelector(".message-box-container p");
+    message_box_text.textContent = result.message;
+    message_box.dataset.view = "show";
+    if (message_box.dataset.view == "show") {
+      setInterval(() => {
+        message_box.dataset.view = "hide";
+      }, 5000);
+    }
   }
   goal_input_value();
 });

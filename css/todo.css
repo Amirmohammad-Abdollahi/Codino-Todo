@@ -1,3 +1,30 @@
+/* ======================================
+   Scrollbar
+	====================================== */
+
+html::-webkit-scrollbar {
+  width: calc(var(--spacing-sm) - 0.1rem);
+}
+
+html::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+
+html::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: var(--radius-round);
+
+  cursor: -webkit-grab;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient-primary);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 /* ================== پایه (Base) ================== */
 * {
   box-sizing: border-box;
@@ -28,7 +55,7 @@ body {
   max-width: 100%;
   margin: 0 auto;
   padding: var(--spacing-sm) var(--spacing-md);
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   gap: var(--radius-md);
@@ -44,7 +71,7 @@ body {
 }
 
 .sidebar {
-  flex: 0 0 40%;
+  flex: 0 0 35%;
   display: flex;
   flex-direction: column;
   gap: var(--radius-md);
@@ -76,49 +103,40 @@ body {
 
 /* ================== Sidebar Cards - Flexible Sizing ================== */
 .today-goal {
-  flex: 0 0 auto; /* فقط به اندازه محتوای داخلش بزرگ میشه */
-  min-height: unset; /* هیچ ارتفاع ثابتی نداشته باشه */
+  flex: 0 0 auto;
+  /* فقط به اندازه محتوای داخلش بزرگ میشه */
+  min-height: unset;
+  /* هیچ ارتفاع ثابتی نداشته باشه */
 }
 
-.habit-tracker,
+.fucus-box,
 .quick-notes {
-  flex: 1; /* بقیه فضای سایدبار رو پر کنن */
-  min-height: 0; /* خیلی مهمه برای اینکه flex کار کنه */
-}
-
-/* اگه خواستی کارت‌های پایین خیلی کوچیک نشن، این خط رو اضافه کن */
-.habit-tracker,
-.quick-notes {
-  min-height: 140px; /* حداقل ارتفاع معقول */
+  flex: 1;
+  /* بقیه فضای سایدبار رو پر کنن */
+  min-height: 0;
+  /* خیلی مهمه برای اینکه flex کار کنه */
 }
 
 .todo-list {
+  display: flex;
+
+  flex-direction: column;
+
+  height: 100%;
+
+  padding: 0 !important;
+
+  overflow: hidden;
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
-}
-.todo-chart {
-  flex: 0 0 275px;
-  min-height: 290px;
 }
 
-/* ================== ریسپانسیو ================== */
-@media (max-width: 1100px) {
-  .dashboard {
-    flex-direction: column;
-  }
-  .sidebar {
-    flex: 0 0 auto;
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
-  }
-  .sidebar .card {
-    flex: 1 1 320px;
-    min-height: 200px;
-  }
+.todo-chart {
+  flex: 0 0 275px;
+  min-height: 350px;
+  gap: 0.5rem;
 }
+
 /* ========================================
    TODAY'S GOAL CARD - Premium Refined
 ======================================== */
@@ -127,11 +145,21 @@ body {
 .today-goal {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-xl);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
+  gap: 12px;
   box-shadow: var(--shadow-sm);
+}
+
+.note_box_empty {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass);
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 2px 2px 100px -55px var(--info);
 }
 
 /* Header */
@@ -149,16 +177,22 @@ body {
 }
 
 .goal-icon {
-  width: 42px;
-  height: 42px;
-  background: var(--accent-red-opacity);
-  color: var(--accent-red);
-  border-radius: var(--radius-md);
-  padding: 9px;
-  flex-shrink: 0;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--accent-red);
+  background: linear-gradient(145deg,
+      color-mix(in srgb, var(--accent-red) 18%, transparent),
+      color-mix(in srgb, var(--primary) 7%, transparent));
+  border: 1px solid color-mix(in srgb, var(--accent-red) 22%, var(--glass-border));
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 16px color-mix(in srgb, var(--accent-red) 7%, transparent);
+  overflow: hidden;
+  width: 46px;
+  height: 46px;
+  padding: 4px;
+  border-radius: 12px;
 }
 
 .goal-icon svg {
@@ -437,28 +471,6 @@ body {
   color: var(--text-primary);
 }
 
-/* بخش لیست های که باید انجام بشه */
-
-/* ==================================================
-   Todo List
-================================================== */
-
-/* ======================================
-   Todo List
-====================================== */
-
-.todo-list {
-  display: flex;
-
-  flex-direction: column;
-
-  height: 100%;
-
-  padding: 0;
-
-  overflow: hidden;
-}
-
 /* ======================================
    Header
 ====================================== */
@@ -470,7 +482,7 @@ body {
 
   justify-content: space-between;
 
-  padding: 22px 24px;
+  padding: 1rem 24px;
 
   border-bottom: 1px solid var(--border-color);
 
@@ -535,18 +547,15 @@ body {
 
 .todo-counter {
   display: flex;
-
   flex-direction: column;
-
-  align-items: flex-end;
+  align-items: center;
 }
 
 .todo-counter__number {
   font-size: 1.6rem;
-
   font-weight: 800;
-
   color: var(--primary);
+  filter: drop-shadow(0px 0px 12px);
 }
 
 .todo-counter__label {
@@ -570,7 +579,7 @@ body {
 
   align-items: center;
 
-  padding: 18px 24px;
+  padding: 1rem 24px;
 
   border-bottom: 1px solid var(--border-color);
 
@@ -698,6 +707,7 @@ body {
   from {
     transform: rotate(10deg) translate(-160%) translateY(0%);
   }
+
   to {
     transform: rotate(12deg) translate(540%) translateY(-70%);
   }
@@ -727,7 +737,7 @@ body {
     border-color var(--transition-normal),
     opacity var(--transition-normal);
 
-  animation: todo-item-in var(--transition-slow) both;
+  animation: todo-item-in 300ms ease both;
 }
 
 .todo-item.Complete {
@@ -742,9 +752,11 @@ body {
 .todo-item:has([data-todo_priority="High"]) {
   --stripe-color: var(--accent-red);
 }
+
 .todo-item:has([data-todo_priority="Medium"]) {
   --stripe-color: var(--accent-orange);
 }
+
 .todo-item:has([data-todo_priority="Low"]) {
   --stripe-color: var(--accent-green);
 }
@@ -800,19 +812,14 @@ body {
 }
 
 .todo-checkbox__box {
-  width: 24px;
-  height: 24px;
-
-  border-radius: var(--radius-xs);
-
+  width: 28px;
+  height: 28px;
+  border-radius: 22px;
   border: 2px solid var(--border-color);
-
   background: var(--glass);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   transition:
     background var(--transition-fast),
     border-color var(--transition-fast),
@@ -833,12 +840,12 @@ body {
     stroke-dashoffset var(--transition-normal);
 }
 
-.todo-checkbox__input:checked + .todo-checkbox__box {
+.todo-checkbox__input:checked+.todo-checkbox__box {
   background: var(--gradient-primary);
   border-color: transparent;
 }
 
-.todo-checkbox__input:checked + .todo-checkbox__box svg {
+.todo-checkbox__input:checked+.todo-checkbox__box svg {
   opacity: 1;
   stroke-dashoffset: 0;
   color: white;
@@ -852,8 +859,6 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-
-  flex-shrink: 0;
 }
 
 /* ======================================
@@ -1073,9 +1078,10 @@ body {
 ====================================== */
 
 .todo-footer {
-  padding: 20px 24px;
-
+  padding: 1rem 24px;
   border-top: 1px solid var(--border-color);
+  box-shadow: 0px -20px 20px 0px var(--bg-secondary);
+  z-index: 1;
 }
 
 .todo-add-button {
@@ -1099,6 +1105,7 @@ body {
     box-shadow var(--transition-fast),
     filter var(--transition-fast);
 }
+
 /* ===============================
    Sort Dropdown
 ================================ */
@@ -1191,6 +1198,11 @@ body {
   transform: translateY(0);
 }
 
+.text_box_title h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
 /* ===============================
    Items
 ================================ */
@@ -1225,7 +1237,7 @@ body {
 
 .sort-item.active {
   background: var(--primary);
-  color: var(--text-inverse);
+  color: #ffffff;
 }
 
 .sort-item svg {
@@ -1306,7 +1318,8 @@ body {
   top: calc(100% + 0.5rem);
   right: 0;
 
-  width: 240px; /* کمترش کن */
+  width: 240px;
+  /* کمترش کن */
   opacity: 0;
 
   visibility: hidden;
@@ -1315,7 +1328,7 @@ body {
 
   transition: var(--transition-normal);
 
-  max-height: 320px;
+  max-height: 290px;
   overflow-y: auto;
 
   padding: var(--spacing-md);
@@ -1492,8 +1505,7 @@ body {
 
   background: currentColor;
 
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M4 4v5h5M20 20v-5h-5M5.5 18.5a9 9 0 0013-13M18.5 5.5a9 9 0 00-13 13'/%3E%3C/svg%3E")
-    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M4 4v5h5M20 20v-5h-5M5.5 18.5a9 9 0 0013-13M18.5 5.5a9 9 0 00-13 13'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .filter-reset:hover {
@@ -1512,20 +1524,72 @@ body {
    Reduced motion
 ====================================== */
 
-@media (prefers-reduced-motion: reduce) {
-  .todo-item {
-    animation: none;
-  }
-
-  .todo-item,
-  .todo-checkbox__box,
-  .menu-todoItem,
-  .todo-add-button {
-    transition: none;
-  }
+::selection {
+  background-color: rgba(9, 23, 226, 0.5);
+  color: #fff;
 }
 
-::selection {
-  background-color: rgba(37, 100, 235, 0.5);
-  color: #fff;
+.message-box-container {
+  position: fixed;
+  DISPLAY: flex;
+  gap: 0.5rem;
+  align-items: center;
+  max-width: 400px;
+  background: var(--disabled-bg);
+  padding: 0.5rem 1rem;
+  backdrop-filter: blur(18px);
+  border-radius: 12px;
+  z-index: 10000000;
+  border: 1px solid var(--border-color);
+  box-shadow: inset 2px 2px 4px -3px var(--text-opacity);
+  font-size: 0.9rem;
+  line-height: 1.3rem;
+  margin: 1vw;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+
+  transition: all 500ms ease;
+}
+
+.message-box-container[data-view="hide"] {
+  transform: translateY(-80px);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.message-box-svg-container {
+  width: 50px;
+  border: 1px solid color-mix(in srgb, var(--accent-red) 30%, transparent);
+  border-radius: 8px;
+  padding: 0.25rem;
+  background:
+    color-mix(in srgb, var(--accent-red) 12.5%, transparent);
+  color: var(--accent-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#goalDescription::-webkit-scrollbar {
+  width: 0.35rem;
+}
+
+#goalDescription::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+
+#goalDescription::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: var(--radius-round);
+  cursor: -webkit-grab;
+}
+
+#goalDescription::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }

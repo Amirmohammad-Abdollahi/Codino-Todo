@@ -22,7 +22,7 @@
   align-items: center;
   background-color: var(--glass);
   border: 1px solid var(--glass-border);
-  border-radius: calc(var(--radius-2xl) - 1rem);
+  border-radius: calc(var(--radius-2xl) - 0.5rem);
   display: flex;
   height: 5.5rem;
   overflow: hidden;
@@ -34,11 +34,9 @@
 
 .header-panel::before,
 .header-panel::after {
-  background-image: linear-gradient(
-    125deg,
-    var(--primary),
-    var(--accent-purple)
-  );
+  background-image: linear-gradient(125deg,
+      var(--primary),
+      var(--accent-purple));
   border-radius: 50%;
   content: "";
   filter: blur(1.7rem);
@@ -88,9 +86,7 @@
 }
 
 .header-widget__value {
-  color: var(--text-primary);
-  font-size: var(--text-lg);
-  font-weight: 600;
+  font-size: 1.1rem;
 }
 
 .header-widget__label {
@@ -116,10 +112,11 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   pointer-events: none;
+  border: 2px solid var(--primary)
 }
 
 .profile::after {
-  background: linear-gradient(110deg, var(--accent-green), var(--success));
+  background: var(--gradient-primary);
   border-radius: 50%;
   bottom: 4px;
   box-shadow: 0 0 0 4px var(--bg-primary);
@@ -142,6 +139,7 @@
 
 .theme-toggle {
   cursor: pointer;
+  transition: transform 180ms ease;
 }
 
 .theme-switch {
@@ -162,11 +160,9 @@
 }
 
 .theme-thumb {
-  background-color: var(--primary);
+  background: var(--gradient-primary);
   border-radius: 50%;
-  box-shadow:
-    inset 2px 2px 4px -2px rgba(255, 255, 255, 0.5),
-    inset -2px -2px 4px -2px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 2px 2px 4px -2px rgba(255, 255, 255, 0.5), inset -2px -2px 4px -2px rgba(0, 0, 0, 0.5);
   height: calc(2.5rem - 0.4rem);
   left: 5.5px;
   position: absolute;
@@ -321,7 +317,6 @@
 .greeting-title {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
 }
 
@@ -339,7 +334,5 @@
 }
 
 .greeting-subtitle {
-  background-image: linear-gradient(135deg, #ffe66d, #ffb347, #ff5ea8, #7c4dff);
-  background-clip: text;
-  -webkit-text-fill-color: var(--text-opacity);
+  color: var(--text-primary);
 }

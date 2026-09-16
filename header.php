@@ -3,7 +3,8 @@
 	<div class="header-left">
 		<div class="greeting-title">
 			<h2>
-				<span id="title-header-left"></span>,<div id="usernameView">User</div>
+				<div id="header-title-text-fully"><span id="title-header-left"></span>,</div>
+				<div id="usernameView">User</div>
 			</h2>
 			<img src="icons/Sun-greeting-Icom.png" alt="svg خورشید" loading="lazy">
 		</div>

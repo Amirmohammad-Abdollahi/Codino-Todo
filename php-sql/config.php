@@ -1,8 +1,9 @@
 <?php
-$host = "localhost";
-$dbname = "todo_app";
-$username = "root";
-$password = "";
+
+$host = "sql107.infinityfree.com";
+$dbname = "if0_42916928_todo_app";
+$username = "if0_42916928";
+$password = "qOqHjBCBpSj";
 
 try {
 	$pdo = new PDO(

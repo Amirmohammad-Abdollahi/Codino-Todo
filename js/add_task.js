@@ -1,3 +1,6 @@
+import { refreshChart } from "./chart.js";
+import { add_task_dropdown } from "./add-task-dropdown.js";
+
 const task_object = {
   modal: document.querySelector(".modal"),
   backdrop: document.querySelector(".modal__backdrop"),
@@ -54,12 +57,24 @@ task_object.form.addEventListener("submit", async (e) => {
     const result = await response.json();
 
     if (result.success) {
+      refreshChart();
       await loadTasks(currentSort);
       await progress();
+      await add_task_dropdown();
       task_object.form.reset();
       closeModal();
     } else {
-      alert(result.message);
+      const message_box = document.querySelector(".message-box-container");
+      const message_box_text = document.querySelector(
+        ".message-box-container p",
+      );
+      message_box_text.textContent = result.message;
+      message_box.dataset.view = "show";
+      if (message_box.dataset.view == "show") {
+        setInterval(() => {
+          message_box.dataset.view = "hide";
+        }, 5000);
+      }
     }
   } catch (error) {
     console.error(error);
@@ -211,6 +226,16 @@ async function loadTasks(sort = currentSort) {
 		<div class="empty_task">There are no tasks</div>
 	</div>`;
     }
+  } else {
+    const message_box = document.querySelector(".message-box-container");
+    const message_box_text = document.querySelector(".message-box-container p");
+    message_box_text.textContent = result.message;
+    message_box.dataset.view = "show";
+    if (message_box.dataset.view == "show") {
+      setInterval(() => {
+        message_box.dataset.view = "hide";
+      }, 5000);
+    }
   }
 }
 
@@ -247,6 +272,9 @@ document.addEventListener("change", async (e) => {
 
     const article = e.target.closest(".todo-item");
 
+    refreshChart();
+    await add_task_dropdown();
+
     if (e.target.checked) {
       article.classList.remove("Incomplete");
       article.classList.add("Complete");
@@ -256,7 +284,17 @@ document.addEventListener("change", async (e) => {
     }
 
     if (!result.success) {
-      alert(result.message);
+      const message_box = document.querySelector(".message-box-container");
+      const message_box_text = document.querySelector(
+        ".message-box-container p",
+      );
+      message_box_text.textContent = result.message;
+      message_box.dataset.view = "show";
+      if (message_box.dataset.view == "show") {
+        setInterval(() => {
+          message_box.dataset.view = "hide";
+        }, 5000);
+      }
     }
   } catch (err) {
     console.log(err);
@@ -296,10 +334,20 @@ document.addEventListener("click", async (e) => {
   const result = await response.json();
 
   if (result.success) {
+    refreshChart();
     await loadTasks(currentSort);
     await progress();
+    await add_task_dropdown();
   } else {
-    console.log(result.message);
+    const message_box = document.querySelector(".message-box-container");
+    const message_box_text = document.querySelector(".message-box-container p");
+    message_box_text.textContent = result.message;
+    message_box.dataset.view = "show";
+    if (message_box.dataset.view == "show") {
+      setInterval(() => {
+        message_box.dataset.view = "hide";
+      }, 5000);
+    }
   }
 });
 
@@ -318,6 +366,8 @@ document.addEventListener("click", async (e) => {
   });
   const result = await response.json();
   if (result.success) {
+    await add_task_dropdown();
+    refreshChart();
     Objects.edit_form.dataset.id = id;
     Objects.edit_form.task.value = result.data.task;
     Objects.edit_form.category.value = result.data.category;
@@ -327,6 +377,16 @@ document.addEventListener("click", async (e) => {
     Objects.edit_form.duration_hour.value = hours;
     Objects.edit_form.duration_minute.value = minute;
     open_modal();
+  } else {
+    const message_box = document.querySelector(".message-box-container");
+    const message_box_text = document.querySelector(".message-box-container p");
+    message_box_text.textContent = result.message;
+    message_box.dataset.view = "show";
+    if (message_box.dataset.view == "show") {
+      setInterval(() => {
+        message_box.dataset.view = "hide";
+      }, 5000);
+    }
   }
   Objects.backdrop.addEventListener("click", close_modal);
 });
@@ -341,9 +401,21 @@ Objects.edit_form.addEventListener("submit", async (e) => {
   });
   const res = await send_form.json();
   if (res.success) {
+    await add_task_dropdown();
+    refreshChart();
     await loadTasks(currentSort);
     await progress();
     close_modal();
+  } else {
+    const message_box = document.querySelector(".message-box-container");
+    const message_box_text = document.querySelector(".message-box-container p");
+    message_box_text.textContent = result.message;
+    message_box.dataset.view = "show";
+    if (message_box.dataset.view == "show") {
+      setInterval(() => {
+        message_box.dataset.view = "hide";
+      }, 5000);
+    }
   }
 });
 
@@ -458,7 +530,17 @@ async function progress() {
     const response = await fetch("get-info/get_progress.php");
     const result = await response.json();
 
-    if (!result.success) return;
+    if (!result.success) {
+    const message_box = document.querySelector(".message-box-container");
+    const message_box_text = document.querySelector(".message-box-container p");
+    message_box_text.textContent = result.message;
+    message_box.dataset.view = "show";
+    if (message_box.dataset.view == "show") {
+      setInterval(() => {
+        message_box.dataset.view = "hide";
+      }, 5000);
+    }
+  };
 
     const total = Number(result.data.total) || 0;
     const completed = Number(result.data.completed) || 0;
