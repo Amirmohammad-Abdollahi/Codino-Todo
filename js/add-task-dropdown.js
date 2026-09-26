@@ -6,7 +6,7 @@ export async function add_task_dropdown() {
   try {
     const response = await fetch("get-info/get-task-dropdown.php");
 
-    if (!response.ok) {
+    if (!response) {
       throw new Error("Failed to fetch tasks");
     }
 
@@ -81,16 +81,18 @@ export async function add_task_dropdown() {
     // ========================================
 
     if (!result.success) {
-      const message_box = document.querySelector(".message-box-container");
-      const message_box_text = document.querySelector(
-        ".message-box-container p",
-      );
-      message_box_text.textContent = result.message;
-      message_box.dataset.view = "show";
-      if (message_box.dataset.view == "show") {
-        setInterval(() => {
-          message_box.dataset.view = "hide";
-        }, 5000);
+const message_box = document.querySelector(".message-box-container");
+      if (message_box.dataset.log == "in" || result.message != "") {
+        const message_box_text = document.querySelector(
+          ".message-box-container p",
+        );
+        message_box_text.textContent = result.message;
+        message_box.dataset.view = "show";
+        if (message_box.dataset.view == "show") {
+          setInterval(() => {
+            message_box.dataset.view = "hide";
+          }, 5000);
+        }
       }
       return;
     }

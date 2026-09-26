@@ -16,7 +16,7 @@ const UI_OBJ = {
 
 //#endregion
 
-//#region بخش گل آبجکت
+//#region بخش Goal
 
 const goalObj = {
   goal_title: document.querySelector(".goal-name"),
@@ -33,7 +33,11 @@ function getRemainingTime(deadline) {
   const now = new Date();
   const end = new Date(deadline);
 
-  // اگر گذشته باشه
+  if (isNaN(end.getTime())) {
+    return "";
+  }
+
+  // اگر تاریخ گذشته باشد
   if (end <= now) {
     return "Expired";
   }
@@ -92,8 +96,15 @@ function getRemainingTime(deadline) {
 
   return `${minutes} minute${minutes > 1 ? "s" : ""} left`;
 }
+
 function getTimePast(date) {
-  const diff = Date.now() - new Date(date).getTime();
+  const time = new Date(date).getTime();
+
+  if (isNaN(time)) {
+    return "";
+  }
+
+  const diff = Date.now() - time;
 
   const minute = Math.floor(diff / (1000 * 60));
   const hour = Math.floor(diff / (1000 * 60 * 60));
@@ -105,13 +116,21 @@ function getTimePast(date) {
     numeric: "auto",
   });
 
-  if (minute < 60) return rtf.format(-minute, "minute");
+  if (minute < 60) {
+    return rtf.format(-minute, "minute");
+  }
 
-  if (hour < 24) return rtf.format(-hour, "hour");
+  if (hour < 24) {
+    return rtf.format(-hour, "hour");
+  }
 
-  if (day < 30) return rtf.format(-day, "day");
+  if (day < 30) {
+    return rtf.format(-day, "day");
+  }
 
-  if (month < 12) return rtf.format(-month, "month");
+  if (month < 12) {
+    return rtf.format(-month, "month");
+  }
 
   return rtf.format(-year, "year");
 }
@@ -121,7 +140,8 @@ const statusClass = ["Pending", "Progress", "Completed"];
 
 //#endregion
 
-//#region بخش روز streak
+//#region بخش Streak
+
 const streakObj = {
   streakTime: document.querySelector(".streak-value"),
 };
@@ -188,95 +208,330 @@ function streakDate(dateString) {
 
   return `${minutes} minute${minutes > 1 ? "s" : ""}`;
 }
+
 //#endregion
 
 document.addEventListener("DOMContentLoaded", async () => {
+  //#region شروع Loader
+
   startStep("init");
   startStep("tasks");
   startStep("user");
   startStep("ready");
-  const response = await fetch("php-sql/get_user.php");
 
-  const result = await response.json();
+  //#endregion
 
-  if (result.success) {
-    const txtPalace = result.data.user;
+  //#region Message Box
 
-    UI_OBJ.usernameView.textContent = txtPalace.display_name;
+  const messageBox = document.querySelector(".message-box-container");
+  const messageBoxText = messageBox?.querySelector("p");
 
-    UI_OBJ.profile.src = txtPalace.avatar;
+  let messageTimeout = null;
 
-    UI_OBJ.goal_name.textContent = txtPalace.daily_goal;
-    completeStep("user");
+  function showMessage(message) {
+    if (!messageBox || !messageBoxText || !message) {
+      return;
+    }
+
+    messageBoxText.textContent = message;
+    messageBox.dataset.view = "show";
+
+    if (messageTimeout) {
+      clearTimeout(messageTimeout);
+    }
+
+    messageTimeout = setTimeout(() => {
+      messageBox.dataset.view = "hide";
+    }, 5000);
   }
 
-  const goal_response = await fetch("get-info/get_goal.php");
+  //#endregion
 
-  const goal_result = await goal_response.json();
+  //#region Fetch Helper
 
-  if (goal_result.success) {
-    goalObj.goal_title.textContent = goal_result.data.title;
+  async function fetchJSON(url) {
+    const response = await fetch(url);
 
-    goalObj.goal_subtitle.textContent = goal_result.data.description;
+    let result;
 
-    goalObj.deadline.textContent = getRemainingTime(goal_result.data.deadLine);
+    try {
+      result = await response.json();
+    } catch (error) {
+      throw new Error(`Invalid JSON response from ${url}`);
+    }
 
-    goalObj.deadline_footer.textContent = getTimePast(
-      goal_result.data.updated_at,
-    );
+    if (!response.ok) {
+      throw new Error(
+        result?.message || `Request failed with status ${response.status}`,
+      );
+    }
 
-    priorityClass.forEach((item) => {
-      goalObj.priority.classList.remove(item);
-    });
+    return result;
+  }
 
-    statusClass.forEach((item) => {
-      goalObj.status.classList.remove(item);
-    });
+  //#endregion
 
-    goalObj.priority.classList.add(goal_result.data.priority);
+  try {
+    //#region User
 
-    goalObj.priorityTxt.textContent = goal_result.data.priority;
+    try {
+      const userResult = await fetchJSON("php-sql/get_user.php");
 
-    goalObj.status.classList.add(goal_result.data.status);
+      if (userResult.success && userResult.data?.user) {
+        const user = userResult.data.user;
 
-    goalObj.statusTxt.textContent = goal_result.data.status;
+        if (UI_OBJ.usernameView) {
+          UI_OBJ.usernameView.textContent = user.display_name ?? "";
+        }
+
+        if (UI_OBJ.profile && user.avatar) {
+          UI_OBJ.profile.src = user.avatar;
+        }
+
+        if (UI_OBJ.goal_name) {
+          UI_OBJ.goal_name.textContent = user.daily_goal ?? "";
+        }
+      } else {
+        /*
+         * برای Guest یا هر وضعیت عادی،
+         * فقط پیام را نمایش نمی‌دهیم مگر API واقعاً
+         * یک خطای قابل نمایش داشته باشد.
+         */
+
+        if (
+          userResult.code &&
+          !["GUEST", "PROFILE_NOT_COMPLETED"].includes(userResult.code)
+        ) {
+          showMessage(userResult.message);
+        }
+      }
+    } catch (error) {
+      console.error("get_user.php error:", error);
+
+      showMessage("Could not load user information.");
+    }
+
+    /*
+     * این مرحله باید در هر حالت تمام شود.
+     * حتی Guest بودن نباید Loader را متوقف کند.
+     */
+
+    completeStep("user");
+
+    //#endregion
+
+    //#region Goal
+
+    try {
+      const goalResult = await fetchJSON("get-info/get_goal.php");
+
+      /*
+       * -----------------------------------------------------
+       * Goal وجود دارد
+       * -----------------------------------------------------
+       */
+
+      if (goalResult.code === "GOAL_LOADED") {
+        const goal = goalResult.data?.goal;
+
+        if (!goal) {
+          throw new Error("GOAL_LOADED received without goal data.");
+        }
+
+        if (goalObj.goal_title) {
+          goalObj.goal_title.textContent = goal.title ?? "";
+        }
+
+        if (goalObj.goal_subtitle) {
+          goalObj.goal_subtitle.textContent = goal.description ?? "";
+        }
+
+        if (goalObj.deadline) {
+          goalObj.deadline.textContent = getRemainingTime(goal.deadLine);
+        }
+
+        if (goalObj.deadline_footer) {
+          goalObj.deadline_footer.textContent = getTimePast(goal.updated_at);
+        }
+
+        // حذف Priority های قبلی
+        if (goalObj.priority) {
+          priorityClass.forEach((item) => {
+            goalObj.priority.classList.remove(item);
+          });
+
+          if (goal.priority) {
+            goalObj.priority.classList.add(goal.priority);
+          }
+        }
+
+        if (goalObj.priorityTxt) {
+          goalObj.priorityTxt.textContent = goal.priority ?? "";
+        }
+
+        // حذف Status های قبلی
+        if (goalObj.status) {
+          statusClass.forEach((item) => {
+            goalObj.status.classList.remove(item);
+          });
+
+          if (goal.status) {
+            goalObj.status.classList.add(goal.status);
+          }
+        }
+
+        if (goalObj.statusTxt) {
+          goalObj.statusTxt.textContent = goal.status ?? "";
+        }
+      } else if (goalResult.code === "GUEST") {
+        /*
+         * -----------------------------------------------------
+         * Guest
+         * -----------------------------------------------------
+         */
+        console.log("Guest user. No goal data available.");
+      } else if (goalResult.code === "PROFILE_NOT_COMPLETED") {
+        /*
+         * -----------------------------------------------------
+         * Profile هنوز کامل نشده
+         * -----------------------------------------------------
+         */
+        console.log("Profile is not completed yet.");
+      } else if (goalResult.code === "GOAL_NOT_FOUND") {
+        /*
+         * -----------------------------------------------------
+         * Goal هنوز ساخته نشده
+         * -----------------------------------------------------
+         */
+      } else {
+        /*
+         * -----------------------------------------------------
+         * خطای واقعی
+         * -----------------------------------------------------
+         */
+        // showMessage(goalResult.message || "Could not load goal information.");
+      }
+    } catch (error) {
+      // console.error("get_goal.php error:", error);
+
+      // showMessage("Could not load goal information.");
+    }
+
+    /*
+     * Goal در هر شرایطی مرحله‌اش تمام است.
+     */
 
     completeStep("tasks");
-  } else {
-    const message_box = document.querySelector(".message-box-container");
-    const message_box_text = document.querySelector(".message-box-container p");
-    message_box_text.textContent = result.message;
-    message_box.dataset.view = "show";
-    if (message_box.dataset.view == "show") {
-      setInterval(() => {
-        message_box.dataset.view = "hide";
-      }, 5000);
+
+    //#endregion
+
+    //#region Notes
+
+    try {
+      await load_note_mess();
+    } catch (error) {
+      console.error("load_note_mess error:", error);
+
+      /*
+       * Notes نباید باعث گیر کردن Loader شود.
+       */
     }
-  }
 
-  load_note_mess();
-  completeStep("init");
-  completeStep("ready");
-  document.querySelector(".focus-task p").textContent =
-    localStorage.getItem("focus-task");
-  finishLoader();
+    //#endregion
 
-  const streakDaysjson = await fetch("get-info/get_streak.php");
+    //#region Focus Task
 
-  const streakDays = await streakDaysjson.json();
+    try {
+      const focusTaskElement = document.querySelector(".focus-task p");
 
-  if (streakDays.success) {
-    streakObj.streakTime.textContent = streakDate(streakDays.data.created_at);
-  } else {
-    const message_box = document.querySelector(".message-box-container");
-    const message_box_text = document.querySelector(".message-box-container p");
-    message_box_text.textContent = result.message;
-    message_box.dataset.view = "show";
-    if (message_box.dataset.view == "show") {
-      setInterval(() => {
-        message_box.dataset.view = "hide";
-      }, 5000);
+      const focusTask = localStorage.getItem("focus-task");
+
+      if (focusTaskElement) {
+        focusTaskElement.textContent = focusTask || "";
+      }
+    } catch (error) {
+      console.error("Focus task error:", error);
     }
+
+    //#endregion
+
+    //#region تمام شدن مراحل اصلی Loader
+
+    completeStep("init");
+    completeStep("ready");
+
+    /*
+     * از اینجا به بعد Dashboard اصلی دیگر
+     * نباید منتظر Streak یا Goal Input بماند.
+     */
+
+    finishLoader();
+
+    //#endregion
+
+    //#region Streak
+
+    try {
+      const streakResult = await fetchJSON("get-info/get_streak.php");
+
+      if (
+        streakResult.success &&
+        streakResult.data?.created_at &&
+        streakObj.streakTime
+      ) {
+        streakObj.streakTime.textContent = streakDate(
+          streakResult.data.created_at,
+        );
+      } else if (
+        /*
+         * اگر Streak برای Guest یا کاربر جدید
+         * وجود نداشته باشد، خطای UI نشان نمی‌دهیم.
+         */
+        streakResult.code &&
+        !["GUEST", "STREAK_NOT_FOUND", "PROFILE_NOT_COMPLETED"].includes(
+          streakResult.code,
+        )
+      ) {
+        showMessage(streakResult.message);
+      }
+    } catch (error) {
+      console.error("get_streak.php error:", error);
+
+      /*
+       * Streak اطلاعات جانبی است،
+       * پس کل صفحه را خراب نمی‌کنیم.
+       */
+    }
+
+    //#endregion
+
+    //#region Goal Input
+
+    try {
+      goal_input_value();
+    } catch (error) {
+      console.error("goal_input_value error:", error);
+    }
+
+    //#endregion
+  } catch (error) {
+    /*
+     * این catch برای خطاهای غیرمنتظره‌ی اصلی است.
+     */
+
+    console.error("Info loader error:", error);
+
+    console.error("Error message:", error?.message);
+
+    console.error("Error stack:", error?.stack);
+  } finally {
+    /*
+     * این مهم‌ترین قسمت است.
+     *
+     * حتی اگر یک خطای غیرمنتظره قبل از finishLoader
+     * رخ بدهد، Loader نباید برای همیشه روی صفحه بماند.
+     */
+
+    finishLoader();
   }
-  goal_input_value();
 });

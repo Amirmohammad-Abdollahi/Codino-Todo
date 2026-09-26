@@ -1,42 +1,81 @@
 <?php
+
 header("Content-Type: application/json; charset=utf-8");
 
 require_once "config.php";
 require_once "cookie.php";
 
-function Response(bool $success, string $message = "", array $data = []): void
-{
+
+function Response(
+	bool $success,
+	string $message = "",
+	array $data = []
+): void {
 	exit(json_encode([
 		"success" => $success,
 		"message" => $message,
-		"data" => $data
-	]));
+		"data"    => $data
+	], JSON_UNESCAPED_UNICODE));
 }
 
+
 $user_id = getUserId();
-$data_json = json_decode(file_get_contents("php://input"), true);
-$range = $data_json["data_target"];
+
+
+// کاربر مهمان / تازه‌وارد
+$isGuest = empty($user_id);
+
+// برای Queryها مقدار امن
+$query_user_id = $isGuest ? 0 : $user_id;
+
+
+$data_json = json_decode(
+	file_get_contents("php://input"),
+	true
+);
+
+$range = $data_json["data_target"] ?? null;
+
+
+if (!$range) {
+	Response(
+		false,
+		"Invalid data range."
+	);
+}
+
+
+if (!in_array($range, ["week", "month", "year"], true)) {
+	Response(
+		false,
+		"Invalid data range."
+	);
+}
 
 if ($range == "week") {
 
-	$stmt = $pdo->prepare("
-        SELECT week_start
-        FROM users
-        WHERE user_id = :user_id
-        LIMIT 1
-    ");
+	$week_start = "saturday";
 
-	$stmt->execute([
-		":user_id" => $user_id
-	]);
+	if (!$isGuest) {
 
-	$user = $stmt->fetch(PDO::FETCH_ASSOC);
+		$stmt = $pdo->prepare("
+            SELECT week_start
+            FROM users
+            WHERE user_id = :user_id
+            LIMIT 1
+        ");
 
-	if (!$user) {
-		Response(false, "User settings not found");
+		$stmt->execute([
+			":user_id" => $user_id
+		]);
+
+		$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		if ($user && !empty($user["week_start"])) {
+			$week_start = strtolower($user["week_start"]);
+		}
 	}
 
-	$week_start = strtolower($user["week_start"]);
 
 	$today = new DateTime(
 		"now",
@@ -53,7 +92,9 @@ if ($range == "week") {
 		"saturday" => 6
 	];
 
-	$current_day = strtolower($today->format("l"));
+	$current_day = strtolower(
+		$today->format("l")
+	);
 
 	$start_day_number = $days[$week_start];
 	$current_day_number = $days[$current_day];
@@ -63,7 +104,9 @@ if ($range == "week") {
 
 	$startOfWeek = clone $today;
 
-	$startOfWeek->modify("-{$days_from_start} days");
+	$startOfWeek->modify(
+		"-{$days_from_start} days"
+	);
 
 	$startOfWeek->setTime(0, 0, 0);
 

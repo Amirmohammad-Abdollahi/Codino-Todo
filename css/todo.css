@@ -671,11 +671,7 @@ body {
   position: absolute;
   top: calc(50% - (60px / 2));
   left: calc(50% - (288.39px / 2));
-  background: var(--gradient-surface);
   border-radius: 999rem;
-  box-shadow:
-    inset 2px 3px 8px -1px rgba(255, 255, 255, 0.2),
-    inset -3px -3px 6px -1px rgba(0, 0, 0, 0.2);
   overflow: hidden;
 }
 
@@ -686,7 +682,6 @@ body {
   -webkit-text-fill-color: transparent;
   padding: 0.75rem 1.25rem;
   border-radius: 999rem;
-  border: 1px solid var(--glass-border);
   font-weight: 700;
 }
 
@@ -1531,17 +1526,16 @@ body {
 
 .message-box-container {
   position: fixed;
-  DISPLAY: flex;
+  display: flex;
   gap: 0.5rem;
   align-items: center;
   max-width: 400px;
   background: var(--disabled-bg);
   padding: 0.5rem 1rem;
-  backdrop-filter: blur(18px);
-  border-radius: 12px;
+  border-radius: 8px;
   z-index: 10000000;
   border: 1px solid var(--border-color);
-  box-shadow: inset 2px 2px 4px -3px var(--text-opacity);
+  box-shadow: inset 2px 2px 4px -5px var(--text-opacity);
   font-size: 0.9rem;
   line-height: 1.3rem;
   margin: 1vw;
@@ -1564,16 +1558,17 @@ body {
 }
 
 .message-box-svg-container {
-  width: 50px;
+  min-width: 40px;
   border: 1px solid color-mix(in srgb, var(--accent-red) 30%, transparent);
   border-radius: 8px;
   padding: 0.25rem;
   background:
-    color-mix(in srgb, var(--accent-red) 12.5%, transparent);
+    color-mix(in srgb, var(--accent-red) 15%, transparent);
   color: var(--accent-red);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 2px 2px 6px -1px #0e0e0e5d;
 }
 
 #goalDescription::-webkit-scrollbar {

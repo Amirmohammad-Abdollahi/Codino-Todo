@@ -10,10 +10,13 @@ $user = $stmt->fetch();
 
 if (!$user) {
 	$profile_status = "incomplete";
+	$state_log = "out";
 } elseif ($user["is_profile_completed"] == 0) {
 	$profile_status = "incomplete";
+	$state_log = "out";
 } else {
 	$profile_status = "completed";
+	$state_log = "in";
 }
 ?>
 
@@ -31,7 +34,6 @@ if (!$user) {
 	<link rel="stylesheet" href="css/modal-Goal.css">
 	<link rel="stylesheet" href="css/formUser.css">
 	<link rel="stylesheet" href="css/add-task.css">
-	<link rel="stylesheet" href="css/load_animation.css">
 	<link rel="stylesheet" href="css/chart.css">
 	<link rel="stylesheet" href="css/focus.css">
 	<link rel="stylesheet" href="css/animations.css">
@@ -39,9 +41,9 @@ if (!$user) {
 </head>
 
 <body>
-	<div class="message-box-container" data-view="hide">
+	<div class="message-box-container" data-log="<?= $state_log ?>" data-view="hide">
 		<div class="message-box-svg-container">
-			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="size-6">
 				<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
 			</svg>
 		</div>
@@ -781,7 +783,6 @@ if (!$user) {
 	<script src="js/formUser.js" type="module"></script>
 	<script src="js/goal_process.js" type="module"></script>
 	<script src="js/add_task.js" type="module"></script>
-	<script src="js/todo.js" type="module"></script>
 	<script src="js/export-input-value.js" type="module"></script>
 	<script src="js/note-item.js" type="module"></script>
 	<script src="js/quick_notes.js" type="module"></script>

@@ -2,59 +2,36 @@ const loader = document.querySelector("#loader");
 
 const steps = document.querySelectorAll(".step");
 const progress = document.querySelector(".progress-bar");
+const message_box = document.querySelector(".message-box-container");
 
 let completedSteps = 0;
 
+export function startStep(stepName) {
+  const step = document.querySelector(`[data-step="${stepName}"]`);
 
-export function startStep(stepName){
+  if (!step) return;
 
-    const step = document.querySelector(
-        `[data-step="${stepName}"]`
-    );
-
-
-    if(!step) return;
-
-
-    step.classList.add("active");
-
+  step.classList.add("active");
 }
 
+export function completeStep(stepName) {
+  const step = document.querySelector(`[data-step="${stepName}"]`);
 
+  if (!step) return;
 
-export function completeStep(stepName){
+  step.classList.remove("active");
 
+  step.classList.add("done");
 
-    const step = document.querySelector(
-        `[data-step="${stepName}"]`
-    );
+  completedSteps++;
 
+  progress.style.width = (completedSteps / steps.length) * 100 + "%";
 
-    if(!step) return;
+  const next = step.nextElementSibling;
 
-
-    step.classList.remove("active");
-
-    step.classList.add("done");
-
-
-    completedSteps++;
-
-
-    progress.style.width =
-    (completedSteps / steps.length) * 100 + "%";
-
-
-
-    const next = step.nextElementSibling;
-
-
-    if(next){
-
-        next.classList.add("active");
-
-    }
-
+  if (next) {
+    next.classList.add("active");
+  }
 }
 
 export function finishLoader() {
@@ -64,6 +41,7 @@ export function finishLoader() {
     step.classList.remove("active");
     step.classList.add("done");
   });
+  message_box.dataset.log = "in";
 
   setTimeout(() => {
     loader.classList.add("hide");

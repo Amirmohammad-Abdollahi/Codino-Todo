@@ -260,7 +260,7 @@
 
 .progress-bg {
   fill: none;
-  stroke: var(--bg-secondary);
+  stroke: var(--bg-surface-hover);
   stroke-width: 8;
 }
 

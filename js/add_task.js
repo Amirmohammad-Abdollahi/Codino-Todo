@@ -42,7 +42,7 @@ task_object.form.addEventListener("submit", async (e) => {
   const originalText = task_object.submitButton.textContent;
 
   task_object.submitButton.disabled = true;
-  task_object.submitButton.textContent = "Adding Task";
+  task_object.submitButton.textContent = "...Adding Task";
 
   try {
     const response = await fetch("php-sql/add_task_db.php", {
@@ -51,7 +51,12 @@ task_object.form.addEventListener("submit", async (e) => {
     });
 
     if (!response.ok) {
-      throw new Error("Request failed.");
+      const errorText = await response.text();
+      console.error("PHP ERROR:", errorText);
+
+      throw new Error(
+        `Request failed: ${response.status} ${response.statusText}`,
+      );
     }
 
     const result = await response.json();
@@ -65,15 +70,17 @@ task_object.form.addEventListener("submit", async (e) => {
       closeModal();
     } else {
       const message_box = document.querySelector(".message-box-container");
-      const message_box_text = document.querySelector(
-        ".message-box-container p",
-      );
-      message_box_text.textContent = result.message;
-      message_box.dataset.view = "show";
-      if (message_box.dataset.view == "show") {
-        setInterval(() => {
-          message_box.dataset.view = "hide";
-        }, 5000);
+      if (message_box.dataset.log == "in" || result.message != "") {
+        const message_box_text = document.querySelector(
+          ".message-box-container p",
+        );
+        message_box_text.textContent = result.message;
+        message_box.dataset.view = "show";
+        if (message_box.dataset.view == "show") {
+          setInterval(() => {
+            message_box.dataset.view = "hide";
+          }, 5000);
+        }
       }
     }
   } catch (error) {
@@ -228,13 +235,17 @@ async function loadTasks(sort = currentSort) {
     }
   } else {
     const message_box = document.querySelector(".message-box-container");
-    const message_box_text = document.querySelector(".message-box-container p");
-    message_box_text.textContent = result.message;
-    message_box.dataset.view = "show";
-    if (message_box.dataset.view == "show") {
-      setInterval(() => {
-        message_box.dataset.view = "hide";
-      }, 5000);
+    if (message_box.dataset.log == "in" || result.message != "") {
+      const message_box_text = document.querySelector(
+        ".message-box-container p",
+      );
+      message_box_text.textContent = result.message;
+      message_box.dataset.view = "show";
+      if (message_box.dataset.view == "show") {
+        setInterval(() => {
+          message_box.dataset.view = "hide";
+        }, 5000);
+      }
     }
   }
 }
@@ -285,15 +296,17 @@ document.addEventListener("change", async (e) => {
 
     if (!result.success) {
       const message_box = document.querySelector(".message-box-container");
-      const message_box_text = document.querySelector(
-        ".message-box-container p",
-      );
-      message_box_text.textContent = result.message;
-      message_box.dataset.view = "show";
-      if (message_box.dataset.view == "show") {
-        setInterval(() => {
-          message_box.dataset.view = "hide";
-        }, 5000);
+      if (message_box.dataset.log == "in" || result.message != "") {
+        const message_box_text = document.querySelector(
+          ".message-box-container p",
+        );
+        message_box_text.textContent = result.message;
+        message_box.dataset.view = "show";
+        if (message_box.dataset.view == "show") {
+          setInterval(() => {
+            message_box.dataset.view = "hide";
+          }, 5000);
+        }
       }
     }
   } catch (err) {
@@ -340,13 +353,17 @@ document.addEventListener("click", async (e) => {
     await add_task_dropdown();
   } else {
     const message_box = document.querySelector(".message-box-container");
-    const message_box_text = document.querySelector(".message-box-container p");
-    message_box_text.textContent = result.message;
-    message_box.dataset.view = "show";
-    if (message_box.dataset.view == "show") {
-      setInterval(() => {
-        message_box.dataset.view = "hide";
-      }, 5000);
+    if (message_box.dataset.log == "in" || result.message != "") {
+      const message_box_text = document.querySelector(
+        ".message-box-container p",
+      );
+      message_box_text.textContent = result.message;
+      message_box.dataset.view = "show";
+      if (message_box.dataset.view == "show") {
+        setInterval(() => {
+          message_box.dataset.view = "hide";
+        }, 5000);
+      }
     }
   }
 });
@@ -379,13 +396,17 @@ document.addEventListener("click", async (e) => {
     open_modal();
   } else {
     const message_box = document.querySelector(".message-box-container");
-    const message_box_text = document.querySelector(".message-box-container p");
-    message_box_text.textContent = result.message;
-    message_box.dataset.view = "show";
-    if (message_box.dataset.view == "show") {
-      setInterval(() => {
-        message_box.dataset.view = "hide";
-      }, 5000);
+    if (message_box.dataset.log == "in" || result.message != "") {
+      const message_box_text = document.querySelector(
+        ".message-box-container p",
+      );
+      message_box_text.textContent = result.message;
+      message_box.dataset.view = "show";
+      if (message_box.dataset.view == "show") {
+        setInterval(() => {
+          message_box.dataset.view = "hide";
+        }, 5000);
+      }
     }
   }
   Objects.backdrop.addEventListener("click", close_modal);
@@ -408,13 +429,17 @@ Objects.edit_form.addEventListener("submit", async (e) => {
     close_modal();
   } else {
     const message_box = document.querySelector(".message-box-container");
-    const message_box_text = document.querySelector(".message-box-container p");
-    message_box_text.textContent = result.message;
-    message_box.dataset.view = "show";
-    if (message_box.dataset.view == "show") {
-      setInterval(() => {
-        message_box.dataset.view = "hide";
-      }, 5000);
+    if (message_box.dataset.log == "in" || result.message != "") {
+      const message_box_text = document.querySelector(
+        ".message-box-container p",
+      );
+      message_box_text.textContent = result.message;
+      message_box.dataset.view = "show";
+      if (message_box.dataset.view == "show") {
+        setInterval(() => {
+          message_box.dataset.view = "hide";
+        }, 5000);
+      }
     }
   }
 });
@@ -531,16 +556,20 @@ async function progress() {
     const result = await response.json();
 
     if (!result.success) {
-    const message_box = document.querySelector(".message-box-container");
-    const message_box_text = document.querySelector(".message-box-container p");
-    message_box_text.textContent = result.message;
-    message_box.dataset.view = "show";
-    if (message_box.dataset.view == "show") {
-      setInterval(() => {
-        message_box.dataset.view = "hide";
-      }, 5000);
+      const message_box = document.querySelector(".message-box-container");
+      if (message_box.dataset.log == "in" || result.message != "") {
+        const message_box_text = document.querySelector(
+          ".message-box-container p",
+        );
+        message_box_text.textContent = result.message;
+        message_box.dataset.view = "show";
+        if (message_box.dataset.view == "show") {
+          setInterval(() => {
+            message_box.dataset.view = "hide";
+          }, 5000);
+        }
+      }
     }
-  };
 
     const total = Number(result.data.total) || 0;
     const completed = Number(result.data.completed) || 0;

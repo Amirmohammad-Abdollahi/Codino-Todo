@@ -129,15 +129,20 @@ goalForm.addEventListener("submit", async (e) => {
     const modal_goal = document.querySelector(".modal-wrapper");
     modal_goal.dataset.modal = "hide";
   }else {
-    const message_box = document.querySelector(".message-box-container");
-    const message_box_text = document.querySelector(".message-box-container p");
-    message_box_text.textContent = result.message;
-    message_box.dataset.view = "show";
-    if (message_box.dataset.view == "show") {
-      setInterval(() => {
-        message_box.dataset.view = "hide";
-      }, 5000);
-    }
+      const message_box = document.querySelector(".message-box-container");
+      if (message_box.dataset.log == "in" || result.message != "") {
+
+        const message_box_text = document.querySelector(
+          ".message-box-container p",
+        );
+        message_box_text.textContent = result.message;
+        message_box.dataset.view = "show";
+        if (message_box.dataset.view == "show") {
+          setInterval(() => {
+            message_box.dataset.view = "hide";
+          }, 5000);
+        }
+      }
   }
   goal_input_value();
 });
