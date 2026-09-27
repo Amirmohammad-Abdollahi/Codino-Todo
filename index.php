@@ -21,11 +21,12 @@ if (!$user) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-theme="dark">
+<html lang="en" dir="ltr" data-theme="light">
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Codino Todo is a modern task management app for organizing tasks, setting priorities, tracking progress, and improving productivity.">
 	<title>Codino Todo App</title>
 	<link rel="icon" href="icons/CODINO.ico">
 	<link rel="stylesheet" href="css/todo.css">
@@ -764,18 +765,25 @@ if (!$user) {
 	</div>
 
 	<!-- Scripts -->
+
 	<script>
 		const container = document.querySelector(".app-container");
 
 		function loaded() {
-			container.dataset.state = "load";
+			if (container) {
+				container.dataset.state = "load";
+			}
 		}
 
 		function unloaded() {
-			container.dataset.state = "unload";
+			if (container) {
+				container.dataset.state = "unload";
+			}
 		}
 	</script>
-	<script src="js/load-animation.js" type="module"></script>
+
+	<script type="module" src="js/load-animation.js"></script>
+
 	<script src="js/header.js" type="module"></script>
 	<script src="js/add-task-dropdown.js" type="module"></script>
 	<script src="js/modal-Goal.js" type="module"></script>
@@ -786,7 +794,9 @@ if (!$user) {
 	<script src="js/export-input-value.js" type="module"></script>
 	<script src="js/note-item.js" type="module"></script>
 	<script src="js/quick_notes.js" type="module"></script>
+
 	<script src="js/info_loader.js" type="module"></script>
+
 	<script src="Libraries/chart.umd.js"></script>
 	<script src="js/chart.js" type="module"></script>
 	<script src="js/focus.js" type="module"></script>

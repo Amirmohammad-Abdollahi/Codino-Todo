@@ -1,4 +1,6 @@
-//#region scrool part
+// ========================================
+// FOCUS WHEELS
+// ========================================
 
 let Minute = "";
 let Second = "";
@@ -25,9 +27,11 @@ const wheelLists = {
 // ========================================
 
 const wheelViewports = {
-  hour: wheelLists.hour.parentElement,
-  minute: wheelLists.minute.parentElement,
-  second: wheelLists.second.parentElement,
+  hour: wheelLists.hour?.parentElement ?? null,
+
+  minute: wheelLists.minute?.parentElement ?? null,
+
+  second: wheelLists.second?.parentElement ?? null,
 };
 
 // ========================================
@@ -42,7 +46,7 @@ const wheelUnits = ["hour", "minute", "second"];
 
 const selectedTime = {
   hour: 0,
-  minute: 0,
+  minute: 25,
   second: 0,
 };
 
@@ -78,16 +82,32 @@ const wheelConfig = {
 };
 
 // ========================================
+// SNAP STATE
+// ========================================
+
+const isSnapping = {
+  hour: false,
+  minute: false,
+  second: false,
+};
+
+// ========================================
 // GENERATE WHEEL ITEMS
 // ========================================
 
 function generateWheelItems(unit) {
-  const { min, max } = wheelConfig[unit];
+  const config = wheelConfig[unit];
+
+  if (!config) {
+    return "";
+  }
+
+  const { min, max } = config;
 
   let html = "";
 
   for (let i = min; i <= max; i++) {
-    const value = i.toString().padStart(2, "0");
+    const value = String(i).padStart(2, "0");
 
     html += `
       <button
@@ -108,7 +128,13 @@ function generateWheelItems(unit) {
 // ========================================
 
 wheelUnits.forEach((unit) => {
-  wheelLists[unit].innerHTML = generateWheelItems(unit);
+  const wheelList = wheelLists[unit];
+
+  if (!wheelList) {
+    return;
+  }
+
+  wheelList.innerHTML = generateWheelItems(unit);
 });
 
 // ========================================
@@ -116,6 +142,10 @@ wheelUnits.forEach((unit) => {
 // ========================================
 
 function getClosestItem(wheelList, wheelViewport) {
+  if (!wheelList || !wheelViewport) {
+    return null;
+  }
+
   const viewportRect = wheelViewport.getBoundingClientRect();
 
   const viewportCenter = viewportRect.top + viewportRect.height / 2;
@@ -123,6 +153,7 @@ function getClosestItem(wheelList, wheelViewport) {
   const items = wheelList.querySelectorAll(".focus-session-wheel-item");
 
   let closestItem = null;
+
   let closestDistance = Infinity;
 
   items.forEach((item) => {
@@ -134,6 +165,7 @@ function getClosestItem(wheelList, wheelViewport) {
 
     if (distance < closestDistance) {
       closestDistance = distance;
+
       closestItem = item;
     }
   });
@@ -146,6 +178,10 @@ function getClosestItem(wheelList, wheelViewport) {
 // ========================================
 
 function updateWheel(wheelList, wheelViewport, unit) {
+  if (!wheelList || !wheelViewport) {
+    return;
+  }
+
   const viewportRect = wheelViewport.getBoundingClientRect();
 
   const viewportCenter = viewportRect.top + viewportRect.height / 2;
@@ -153,6 +189,7 @@ function updateWheel(wheelList, wheelViewport, unit) {
   const items = wheelList.querySelectorAll(".focus-session-wheel-item");
 
   let closestItem = null;
+
   let closestDistance = Infinity;
 
   items.forEach((item) => {
@@ -170,6 +207,7 @@ function updateWheel(wheelList, wheelViewport, unit) {
 
     if (distance < closestDistance) {
       closestDistance = distance;
+
       closestItem = item;
     }
 
@@ -186,6 +224,7 @@ function updateWheel(wheelList, wheelViewport, unit) {
     // ========================================
 
     const maxScale = 1.08;
+
     const minScale = 0.84;
 
     const scale = maxScale - (maxScale - minScale) * progress;
@@ -195,6 +234,7 @@ function updateWheel(wheelList, wheelViewport, unit) {
     // ========================================
 
     const maxOpacity = 1;
+
     const minOpacity = 0.18;
 
     const opacity = maxOpacity - (maxOpacity - minOpacity) * progress;
@@ -204,6 +244,7 @@ function updateWheel(wheelList, wheelViewport, unit) {
     // ========================================
 
     const minTxtShadow = 0;
+
     const maxTxtShadow = 18;
 
     const txtShadow = maxTxtShadow - (maxTxtShadow - minTxtShadow) * progress;
@@ -213,6 +254,7 @@ function updateWheel(wheelList, wheelViewport, unit) {
     // ========================================
 
     const minRotateX = 70;
+
     const maxRotateX = 0;
 
     const rotateX = maxRotateX - (maxRotateX - minRotateX) * progress;
@@ -226,7 +268,7 @@ function updateWheel(wheelList, wheelViewport, unit) {
       rotateX(${rotateX}deg)
     `;
 
-    item.style.opacity = opacity;
+    item.style.opacity = String(opacity);
 
     item.style.textShadow = `
       0 0 ${txtShadow}px
@@ -253,19 +295,20 @@ function updateWheel(wheelList, wheelViewport, unit) {
 // SNAP WHEEL
 // ========================================
 
-const isSnapping = {
-  hour: false,
-  minute: false,
-  second: false,
-};
-
 function snapWheel(unit) {
   const wheelList = wheelLists[unit];
+
   const wheelViewport = wheelViewports[unit];
+
+  if (!wheelList || !wheelViewport) {
+    return;
+  }
 
   const closestItem = getClosestItem(wheelList, wheelViewport);
 
-  if (!closestItem) return;
+  if (!closestItem) {
+    return;
+  }
 
   const targetScrollTop =
     closestItem.offsetTop -
@@ -280,6 +323,17 @@ function snapWheel(unit) {
     top: targetScrollTop,
     behavior: "smooth",
   });
+
+  // بعد از تمام شدن animation
+  clearTimeout(snapTimers[unit]);
+
+  snapTimers[unit] = setTimeout(() => {
+    isSnapping[unit] = false;
+
+    wheelList.style.scrollBehavior = "auto";
+
+    updateWheel(wheelList, wheelViewport, unit);
+  }, 450);
 }
 
 // ========================================
@@ -287,7 +341,9 @@ function snapWheel(unit) {
 // ========================================
 
 function startSnapTimer(unit) {
-  if (isSnapping[unit]) return;
+  if (isSnapping[unit]) {
+    return;
+  }
 
   clearTimeout(snapTimers[unit]);
 
@@ -302,11 +358,20 @@ function startSnapTimer(unit) {
 
 function enableWheelDrag(unit) {
   const wheelList = wheelLists[unit];
+
   const wheelViewport = wheelViewports[unit];
+
+  if (!wheelList || !wheelViewport) {
+    return;
+  }
+
+  // موبایل / Pointer Events
+  wheelViewport.style.touchAction = "none";
 
   let isDragging = false;
 
   let startY = 0;
+
   let startScrollTop = 0;
 
   // ========================================
@@ -323,6 +388,7 @@ function enableWheelDrag(unit) {
     isDragging = true;
 
     startY = event.clientY;
+
     startScrollTop = wheelList.scrollTop;
 
     wheelViewport.setPointerCapture(event.pointerId);
@@ -333,7 +399,9 @@ function enableWheelDrag(unit) {
   // ========================================
 
   wheelViewport.addEventListener("pointermove", (event) => {
-    if (!isDragging) return;
+    if (!isDragging) {
+      return;
+    }
 
     const deltaY = event.clientY - startY;
 
@@ -341,21 +409,31 @@ function enableWheelDrag(unit) {
   });
 
   // ========================================
-  // POINTER UP
+  // END DRAG
   // ========================================
 
-  wheelViewport.addEventListener("pointerup", (event) => {
-    if (!isDragging) return;
+  function endDrag(pointerId = null) {
+    if (!isDragging) {
+      return;
+    }
 
     isDragging = false;
 
     wheelList.style.scrollBehavior = "auto";
 
-    if (wheelViewport.hasPointerCapture(event.pointerId)) {
-      wheelViewport.releasePointerCapture(event.pointerId);
+    if (pointerId !== null && wheelViewport.hasPointerCapture(pointerId)) {
+      wheelViewport.releasePointerCapture(pointerId);
     }
 
     startSnapTimer(unit);
+  }
+
+  // ========================================
+  // POINTER UP
+  // ========================================
+
+  wheelViewport.addEventListener("pointerup", (event) => {
+    endDrag(event.pointerId);
   });
 
   // ========================================
@@ -363,17 +441,7 @@ function enableWheelDrag(unit) {
   // ========================================
 
   wheelViewport.addEventListener("pointercancel", (event) => {
-    if (!isDragging) return;
-
-    isDragging = false;
-
-    wheelList.style.scrollBehavior = "auto";
-
-    if (wheelViewport.hasPointerCapture(event.pointerId)) {
-      wheelViewport.releasePointerCapture(event.pointerId);
-    }
-
-    startSnapTimer(unit);
+    endDrag(event.pointerId);
   });
 
   // ========================================
@@ -381,30 +449,37 @@ function enableWheelDrag(unit) {
   // ========================================
 
   wheelViewport.addEventListener("lostpointercapture", () => {
-    if (!isDragging) return;
-
-    isDragging = false;
-
-    wheelList.style.scrollBehavior = "auto";
-
-    startSnapTimer(unit);
+    endDrag();
   });
 }
 
 // ========================================
-// MOUSE WHEEL
+// MOUSE / TOUCH WHEEL
 // ========================================
 
 function enableWheelScroll(unit) {
   const wheelList = wheelLists[unit];
+
   const wheelViewport = wheelViewports[unit];
+
+  if (!wheelList || !wheelViewport) {
+    return;
+  }
 
   wheelViewport.addEventListener(
     "wheel",
     (event) => {
       event.preventDefault();
 
+      clearTimeout(snapTimers[unit]);
+
+      isSnapping[unit] = false;
+
+      wheelList.style.scrollBehavior = "auto";
+
       wheelList.scrollTop += event.deltaY * 0.5;
+
+      startSnapTimer(unit);
     },
     {
       passive: false,
@@ -419,15 +494,31 @@ function enableWheelScroll(unit) {
 function enableWheelItemClick(unit) {
   const wheelList = wheelLists[unit];
 
+  if (!wheelList) {
+    return;
+  }
+
   wheelList.addEventListener("click", (event) => {
     const item = event.target.closest(".focus-session-wheel-item");
 
-    if (!item) return;
+    if (!item) {
+      return;
+    }
+
+    clearTimeout(snapTimers[unit]);
+
+    isSnapping[unit] = true;
 
     item.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
+
+    snapTimers[unit] = setTimeout(() => {
+      isSnapping[unit] = false;
+
+      updateWheel(wheelList, wheelViewports[unit], unit);
+    }, 450);
   });
 }
 
@@ -437,20 +528,29 @@ function enableWheelItemClick(unit) {
 
 function enableWheelKeyboard(unit) {
   const wheelList = wheelLists[unit];
+
   const wheelViewport = wheelViewports[unit];
+
+  if (!wheelList || !wheelViewport) {
+    return;
+  }
 
   wheelList.addEventListener("keydown", (event) => {
     const isUp = event.key === "ArrowUp";
 
     const isDown = event.key === "ArrowDown";
 
-    if (!isUp && !isDown) return;
+    if (!isUp && !isDown) {
+      return;
+    }
 
     event.preventDefault();
 
     const currentItem = getClosestItem(wheelList, wheelViewport);
 
-    if (!currentItem) return;
+    if (!currentItem) {
+      return;
+    }
 
     const items = [...wheelList.querySelectorAll(".focus-session-wheel-item")];
 
@@ -458,17 +558,9 @@ function enableWheelKeyboard(unit) {
 
     let nextIndex = currentIndex;
 
-    // ========================================
-    // UP
-    // ========================================
-
     if (isUp) {
       nextIndex = Math.max(currentIndex - 1, 0);
     }
-
-    // ========================================
-    // DOWN
-    // ========================================
 
     if (isDown) {
       nextIndex = Math.min(currentIndex + 1, items.length - 1);
@@ -476,12 +568,24 @@ function enableWheelKeyboard(unit) {
 
     const nextItem = items[nextIndex];
 
-    if (!nextItem) return;
+    if (!nextItem) {
+      return;
+    }
+
+    clearTimeout(snapTimers[unit]);
+
+    isSnapping[unit] = true;
 
     nextItem.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
+
+    snapTimers[unit] = setTimeout(() => {
+      isSnapping[unit] = false;
+
+      updateWheel(wheelList, wheelViewport, unit);
+    }, 450);
   });
 }
 
@@ -492,29 +596,57 @@ function enableWheelKeyboard(unit) {
 function enableWheelScrollDetection(unit) {
   const wheelList = wheelLists[unit];
 
-  wheelList.addEventListener("scroll", () => {
-    updateWheel(wheelList, wheelViewports[unit], unit);
+  const wheelViewport = wheelViewports[unit];
 
-    startSnapTimer(unit);
-  });
+  if (!wheelList || !wheelViewport) {
+    return;
+  }
+
+  wheelList.addEventListener(
+    "scroll",
+    () => {
+      updateWheel(wheelList, wheelViewport, unit);
+
+      startSnapTimer(unit);
+    },
+    {
+      passive: true,
+    },
+  );
 }
 
 // ========================================
-// SET VALUE
+// SET WHEEL VALUE
 // ========================================
 
 function setWheelValue(unit, value) {
   const wheelList = wheelLists[unit];
 
+  const wheelViewport = wheelViewports[unit];
+
+  if (!wheelList || !wheelViewport) {
+    return;
+  }
+
   const item = wheelList.querySelector(
     `.focus-session-wheel-item[data-value="${value}"]`,
   );
 
-  if (!item) return;
+  if (!item) {
+    return;
+  }
+
+  isSnapping[unit] = true;
 
   item.scrollIntoView({
-    behavior: "smooth",
+    behavior: "auto",
     block: "center",
+  });
+
+  requestAnimationFrame(() => {
+    updateWheel(wheelList, wheelViewport, unit);
+
+    isSnapping[unit] = false;
   });
 }
 
@@ -525,7 +657,9 @@ function setWheelValue(unit, value) {
 function getSelectedTime() {
   return {
     hour: selectedTime.hour,
+
     minute: selectedTime.minute,
+
     second: selectedTime.second,
   };
 }
@@ -559,6 +693,10 @@ function formatSelectedTime() {
 // ========================================
 
 wheelUnits.forEach((unit) => {
+  if (!wheelLists[unit] || !wheelViewports[unit]) {
+    return;
+  }
+
   enableWheelDrag(unit);
 
   enableWheelScroll(unit);
@@ -577,7 +715,9 @@ wheelUnits.forEach((unit) => {
 // ========================================
 
 setWheelValue("hour", 0);
+
 setWheelValue("minute", 25);
+
 setWheelValue("second", 0);
 
 // ========================================
@@ -594,13 +734,17 @@ requestAnimationFrame(() => {
 // UPDATE AFTER RESIZE
 // ========================================
 
-window.addEventListener("resize", () => {
-  wheelUnits.forEach((unit) => {
-    updateWheel(wheelLists[unit], wheelViewports[unit], unit);
-  });
-});
+let resizeTimer = null;
 
-//#endregion
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+
+  resizeTimer = setTimeout(() => {
+    wheelUnits.forEach((unit) => {
+      updateWheel(wheelLists[unit], wheelViewports[unit], unit);
+    });
+  }, 100);
+});
 
 // ========================================
 // TASK DROPDOWN
@@ -608,22 +752,36 @@ window.addEventListener("resize", () => {
 
 const taskDropdownObject = {
   taskSelectBtn: document.querySelector(".focus-session-task-select"),
+
   taskDropdown: document.querySelector(".focus-task-dropdown"),
+
   taskPlaceholder: document.querySelector(".focus-session-task-placeholder"),
+
   taskCloseBtn: document.querySelector("#close-select-task-btn"),
+
   focusResetBtn: document.querySelector(".focus-reset-btn"),
 };
+
+// ========================================
+// SELECTED FOCUS TASK
+// ========================================
+
+let selectedFocusTask = "";
 
 // ========================================
 // SHOW TASK DROPDOWN
 // ========================================
 
-function show_select_task_dropdown() {
-  if (!taskDropdownObject.taskDropdown) return;
+async function show_select_task_dropdown() {
+  const dropdown = taskDropdownObject.taskDropdown;
 
-  if (taskDropdownObject.taskDropdown.dataset.dropdown === "hide") {
-    taskDropdownObject.taskDropdown.dataset.dropdown = "show";
+  if (!dropdown) {
+    return;
   }
+
+  dropdown.dataset.dropdown = "show";
+
+  await loadFocusTasks();
 }
 
 // ========================================
@@ -631,10 +789,211 @@ function show_select_task_dropdown() {
 // ========================================
 
 function hide_select_task_dropdown() {
-  if (!taskDropdownObject.taskDropdown) return;
+  const dropdown = taskDropdownObject.taskDropdown;
 
-  if (taskDropdownObject.taskDropdown.dataset.dropdown === "show") {
-    taskDropdownObject.taskDropdown.dataset.dropdown = "hide";
+  if (!dropdown) {
+    return;
+  }
+
+  dropdown.dataset.dropdown = "hide";
+}
+
+// ========================================
+// FIND / CREATE FOCUS TASK LIST
+// ========================================
+
+function getFocusTaskList() {
+  const dropdown = taskDropdownObject.taskDropdown;
+
+  if (!dropdown) {
+    return null;
+  }
+
+  let taskList = dropdown.querySelector(".focus-task-list");
+
+  if (!taskList) {
+    taskList = document.createElement("div");
+
+    taskList.className = "focus-task-list";
+
+    dropdown.appendChild(taskList);
+  }
+
+  return taskList;
+}
+
+// ========================================
+// RENDER TASK MESSAGE
+// ========================================
+
+function renderFocusTaskMessage(message) {
+  const taskList = getFocusTaskList();
+
+  if (!taskList) {
+    return;
+  }
+
+  taskList.innerHTML = "";
+
+  const messageElement = document.createElement("p");
+
+  messageElement.className = "focus-task-empty";
+
+  messageElement.textContent = message;
+
+  taskList.appendChild(messageElement);
+}
+
+// ========================================
+// LOAD FOCUS TASKS
+// ========================================
+
+let focusTasksRequest = null;
+
+async function loadFocusTasks() {
+  const taskList = getFocusTaskList();
+
+  if (!taskList) {
+    return;
+  }
+
+  // اگر درخواست قبلی هنوز در حال اجراست
+  if (focusTasksRequest) {
+    try {
+      await focusTasksRequest;
+      return;
+    } catch {
+      // درخواست قبلی شکست خورده
+    }
+  }
+
+  renderFocusTaskMessage("Loading tasks...");
+
+  const params = new URLSearchParams({
+    sort: "newest",
+
+    status: "all",
+
+    category: "all",
+
+    priority: "all",
+  });
+
+  const request = fetch(`get-info/get_tasks.php?${params.toString()}`, {
+    method: "GET",
+
+    cache: "no-store",
+
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  focusTasksRequest = request;
+
+  try {
+    const response = await request;
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    if (!result || !result.success) {
+      throw new Error(result?.message || "Failed to load tasks.");
+    }
+
+    if (!Array.isArray(result.data)) {
+      throw new Error("Invalid task response.");
+    }
+
+    // ========================================
+    // NO TASKS
+    // ========================================
+
+    if (result.data.length === 0) {
+      renderFocusTaskMessage("There is no task");
+
+      return;
+    }
+
+    // ========================================
+    // RENDER TASK LIST
+    // ========================================
+
+    taskList.innerHTML = "";
+
+    result.data.forEach((task) => {
+      if (!task || task.task === undefined || task.task === null) {
+        return;
+      }
+
+      const button = document.createElement("button");
+
+      button.type = "button";
+
+      button.className = "select-focus-task-dropdown";
+
+      button.dataset.taskId = task.id_task ?? "";
+
+      button.textContent = String(task.task);
+
+      taskList.appendChild(button);
+    });
+
+    // اگر response داده داشت
+    // ولی هیچ آیتم قابل نمایش نبود
+    if (!taskList.children.length) {
+      renderFocusTaskMessage("There is no task");
+    }
+
+    // ========================================
+    // RESTORE PREVIOUS TASK
+    // ========================================
+
+    if (selectedFocusTask) {
+      const previousTask = [
+        ...taskList.querySelectorAll(".select-focus-task-dropdown"),
+      ].find((button) => button.textContent.trim() === selectedFocusTask);
+
+      if (previousTask) {
+        taskDropdownObject.taskPlaceholder.textContent = selectedFocusTask;
+
+        taskDropdownObject.taskPlaceholder.style.color = "var(--text-primary)";
+      }
+    }
+
+    // ========================================
+    // RESTORE FROM LOCAL STORAGE
+    // ========================================
+
+    if (!selectedFocusTask) {
+      const storedTask = localStorage.getItem("focus-task");
+
+      if (storedTask && storedTask !== "There is no task") {
+        const storedTaskButton = [
+          ...taskList.querySelectorAll(".select-focus-task-dropdown"),
+        ].find((button) => button.textContent.trim() === storedTask);
+
+        if (storedTaskButton) {
+          selectedFocusTask = storedTask;
+
+          taskDropdownObject.taskPlaceholder.textContent = storedTask;
+
+          taskDropdownObject.taskPlaceholder.style.color =
+            "var(--text-primary)";
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Failed to load focus tasks:", error);
+
+    renderFocusTaskMessage("Could not load tasks.");
+  } finally {
+    if (focusTasksRequest === request) {
+      focusTasksRequest = null;
+    }
   }
 }
 
@@ -642,12 +1001,22 @@ function hide_select_task_dropdown() {
 // SELECT TASK
 // ========================================
 
-document.addEventListener("click", (e) => {
-  const task = e.target.closest(".select-focus-task-dropdown");
+document.addEventListener("click", (event) => {
+  const task = event.target.closest(".select-focus-task-dropdown");
 
-  if (!task) return;
+  if (!task) {
+    return;
+  }
 
-  taskDropdownObject.taskPlaceholder.textContent = task.textContent.trim();
+  const taskText = task.textContent.trim();
+
+  if (!taskText) {
+    return;
+  }
+
+  selectedFocusTask = taskText;
+
+  taskDropdownObject.taskPlaceholder.textContent = taskText;
 
   taskDropdownObject.taskPlaceholder.style.color = "var(--text-primary)";
 
@@ -658,52 +1027,64 @@ document.addEventListener("click", (e) => {
 // OPEN TASK DROPDOWN
 // ========================================
 
-taskDropdownObject.taskSelectBtn.addEventListener(
-  "click",
-  show_select_task_dropdown,
-);
+if (taskDropdownObject.taskSelectBtn) {
+  taskDropdownObject.taskSelectBtn.addEventListener("click", async () => {
+    await show_select_task_dropdown();
+  });
+}
 
 // ========================================
 // CLOSE TASK DROPDOWN
 // ========================================
 
-taskDropdownObject.taskCloseBtn.addEventListener(
-  "click",
-  hide_select_task_dropdown,
-);
+if (taskDropdownObject.taskCloseBtn) {
+  taskDropdownObject.taskCloseBtn.addEventListener(
+    "click",
+    hide_select_task_dropdown,
+  );
+}
 
 // ========================================
-// FORM DROPDOWN
+// FORM MODAL
 // ========================================
 
 const dropdownFormObject = {
   focusSessionModal: document.querySelector(".focus-session-modal"),
 
-  // Close
   focusSessionClose: document.querySelector(".focus-session-close"),
+
   focusSessionBackdrop: document.querySelector(".focus-session-backdrop"),
 
-  // Show
   focusSettingsBtn: document.querySelector(".focus-settings-btn"),
 };
 
 // ========================================
-// SHOW FORM DROPDOWN
+// SHOW FOCUS MODAL
 // ========================================
 
 function showFocusDropdown() {
-  if (dropdownFormObject.focusSessionModal.dataset.view === "hide") {
-    dropdownFormObject.focusSessionModal.dataset.view = "show";
+  const modal = dropdownFormObject.focusSessionModal;
+
+  if (!modal) {
+    return;
   }
+
+  modal.dataset.view = "show";
+
+  // هنگام باز شدن Modal،
+  // Taskها را آماده کن.
+  loadFocusTasks();
 }
 
 // ========================================
-// HIDE FORM DROPDOWN
+// HIDE FOCUS MODAL
 // ========================================
 
 function hideFocusDropdown() {
-  if (dropdownFormObject.focusSessionModal.dataset.view === "show") {
-    dropdownFormObject.focusSessionModal.dataset.view = "hide";
+  const modal = dropdownFormObject.focusSessionModal;
+
+  if (modal) {
+    modal.dataset.view = "hide";
   }
 
   hide_select_task_dropdown();
@@ -713,37 +1094,45 @@ function hideFocusDropdown() {
 // CLOSE MODAL
 // ========================================
 
-dropdownFormObject.focusSessionClose.addEventListener(
-  "click",
-  hideFocusDropdown,
-);
+if (dropdownFormObject.focusSessionClose) {
+  dropdownFormObject.focusSessionClose.addEventListener(
+    "click",
+    hideFocusDropdown,
+  );
+}
 
 // ========================================
 // CLICK BACKDROP
 // ========================================
 
-dropdownFormObject.focusSessionBackdrop.addEventListener(
-  "click",
-  hideFocusDropdown,
-);
+if (dropdownFormObject.focusSessionBackdrop) {
+  dropdownFormObject.focusSessionBackdrop.addEventListener(
+    "click",
+    hideFocusDropdown,
+  );
+}
 
 // ========================================
 // OPEN MODAL
 // ========================================
 
-dropdownFormObject.focusSettingsBtn.addEventListener(
-  "click",
-  showFocusDropdown,
-);
+if (dropdownFormObject.focusSettingsBtn) {
+  dropdownFormObject.focusSettingsBtn.addEventListener(
+    "click",
+    showFocusDropdown,
+  );
+}
 
 // ========================================
-// CLOSE TASK DROPDOWN WHEN CLICKING OUTSIDE
+// CLOSE TASK DROPDOWN OUTSIDE
 // ========================================
 
-document.addEventListener("click", (e) => {
-  const clickedInsideTaskDropdown = e.target.closest(".focus-task-dropdown");
+document.addEventListener("click", (event) => {
+  const clickedInsideTaskDropdown = event.target.closest(
+    ".focus-task-dropdown",
+  );
 
-  const clickedTaskButton = e.target.closest(".focus-session-task-select");
+  const clickedTaskButton = event.target.closest(".focus-session-task-select");
 
   if (!clickedInsideTaskDropdown && !clickedTaskButton) {
     hide_select_task_dropdown();
@@ -756,112 +1145,177 @@ document.addEventListener("click", (e) => {
 
 const focusForm = document.querySelector(".focus-session-form");
 
-focusForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+if (focusForm) {
+  focusForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-  const totalSeconds = getSelectedTimeInSeconds();
+    // ========================================
+    // GET TIME
+    // ========================================
 
-  const task = document
-    .querySelector(".focus-session-task-placeholder")
-    .textContent.trim();
+    const totalSeconds = getSelectedTimeInSeconds();
 
-  // ========================================
-  // VALIDATE TIME
-  // ========================================
+    // ========================================
+    // GET TASK
+    // ========================================
 
-  if (totalSeconds <= 0) {
-    alert("Please select a valid focus duration.");
-    return;
-  }
+    const task = selectedFocusTask.trim();
 
-  // ========================================
-  // REQUEST DATA
-  // ========================================
+    // ========================================
+    // VALIDATE TIME
+    // ========================================
 
-  const focusData = {
-    total_seconds: totalSeconds,
-    select_task: task,
-  };
+    if (totalSeconds <= 0) {
+      alert("Please select a valid focus duration.");
 
-  // ========================================
-  // SEND TO PHP
-  // ========================================
-
-  try {
-    const response = await fetch("php-sql/create-focus.php", {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(focusData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status}`);
+      return;
     }
 
-    const result = await response.json();
+    // ========================================
+    // VALIDATE TASK
+    // ========================================
 
-    if (!result.success) {
-      const message_box = document.querySelector(".message-box-container");
-      if (message_box.dataset.log == "in" || result.message != "") {
+    if (!task || task === "Select a task" || task === "There is no task") {
+      alert("Please select a task.");
 
-        const message_box_text = document.querySelector(
+      return;
+    }
+
+    // ========================================
+    // REQUEST DATA
+    // ========================================
+
+    const focusData = {
+      total_seconds: totalSeconds,
+
+      select_task: task,
+    };
+
+    // ========================================
+    // SUBMIT BUTTON
+    // ========================================
+
+    const submitButton = focusForm.querySelector(".focus-session-submit");
+
+    const originalSubmitText = submitButton?.textContent ?? "Start Focus";
+
+    if (submitButton) {
+      submitButton.disabled = true;
+
+      submitButton.textContent = "Starting...";
+    }
+
+    // ========================================
+    // SEND TO PHP
+    // ========================================
+
+    try {
+      const response = await fetch("php-sql/create-focus.php", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+
+          Accept: "application/json",
+        },
+
+        body: JSON.stringify(focusData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      // ========================================
+      // SERVER ERROR
+      // ========================================
+
+      if (!result || !result.success) {
+        const message = result?.message || "Failed to create focus.";
+
+        const messageBox = document.querySelector(".message-box-container");
+
+        const messageBoxText = document.querySelector(
           ".message-box-container p",
         );
-        message_box_text.textContent = result.message;
-        message_box.dataset.view = "show";
-        if (message_box.dataset.view == "show") {
-          setInterval(() => {
-            message_box.dataset.view = "hide";
+
+        if (messageBox && messageBoxText) {
+          messageBoxText.textContent = message;
+
+          messageBox.dataset.view = "show";
+
+          setTimeout(() => {
+            messageBox.dataset.view = "hide";
           }, 5000);
+        } else {
+          alert(message);
         }
+
+        return;
       }
+
+      // ========================================
+      // SAVE FOCUS DATA
+      // ========================================
+
+      localStorage.setItem("focus-task", focusData.select_task);
+
+      localStorage.setItem("focus-time-now", String(focusData.total_seconds));
+
+      localStorage.setItem("focus-time-real", String(focusData.total_seconds));
+
+      // ========================================
+      // UPDATE SELECTED TASK
+      // ========================================
+
+      selectedFocusTask = focusData.select_task;
+
+      if (taskDropdownObject.taskPlaceholder) {
+        taskDropdownObject.taskPlaceholder.textContent = focusData.select_task;
+
+        taskDropdownObject.taskPlaceholder.style.color = "var(--text-primary)";
+      }
+
+      // ========================================
+      // UPDATE FOCUS TASK UI
+      // ========================================
+
+      const focusTaskText = document.querySelector(".focus-task p");
+
+      if (focusTaskText) {
+        focusTaskText.textContent = focusData.select_task;
+      }
+
+      // ========================================
+      // UPDATE TIMER
+      // ========================================
+
+      timer_down(focusData.total_seconds);
+
+      // ========================================
+      // SET STATE
+      // ========================================
+
+      setFocusState("stop");
+
+      updateFocusUI();
+    } catch (error) {
+      console.error("Focus request failed:", error);
+
+      alert("Could not start focus session. Please try again.");
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+
+        submitButton.textContent = originalSubmitText;
+      }
+
+      hideFocusDropdown();
     }
-
-    // ========================================
-    // SAVE FOCUS DATA
-    // ========================================
-
-    localStorage.setItem("focus-task", focusData.select_task);
-
-    // زمان فعلی
-    localStorage.setItem("focus-time-now", String(focusData.total_seconds));
-
-    // زمان اولیه
-    localStorage.setItem("focus-time-real", String(focusData.total_seconds));
-
-    // ========================================
-    // UPDATE TASK
-    // ========================================
-
-    const focusTaskText = document.querySelector(".focus-task p");
-
-    if (focusTaskText) {
-      focusTaskText.textContent = focusData.select_task;
-    }
-
-    // ========================================
-    // UPDATE TIMER IMMEDIATELY
-    // ========================================
-
-    timer_down(localStorage.getItem("focus-time-now"));
-
-    // ========================================
-    // SET STATE
-    // ========================================
-
-    setFocusState("stop");
-
-    updateFocusUI();
-  } catch (error) {
-    console.error("Focus request failed:", error);
-  } finally {
-    hideFocusDropdown();
-  }
-});
+  });
+}
 
 // ========================================
 // FOCUS STATE
@@ -869,11 +1323,25 @@ focusForm.addEventListener("submit", async (event) => {
 
 const focusStateKey = "focus-state";
 
+// ========================================
+// GET FOCUS STATE
+// ========================================
+
 function getFocusState() {
   return localStorage.getItem(focusStateKey) || "stop";
 }
 
+// ========================================
+// SET FOCUS STATE
+// ========================================
+
 function setFocusState(state) {
+  const allowedStates = ["stop", "start", "pending"];
+
+  if (!allowedStates.includes(state)) {
+    state = "stop";
+  }
+
   localStorage.setItem(focusStateKey, state);
 }
 
@@ -898,21 +1366,19 @@ const focusPauseIcon = document.querySelector(".focus-pause-icon");
 const focusResumeIcon = document.querySelector(".focus-resume-icon");
 
 // ========================================
-// UI STATE
-// ========================================
-
-// ========================================
-// UI STATE
+// UPDATE FOCUS UI
 // ========================================
 
 function updateFocusUI() {
   const state = getFocusState();
 
-  // ========================================
-  // UPDATE BUTTON STATE
-  // ========================================
+  if (focusButtons) {
+    focusButtons.dataset.state = state;
+  }
 
-  focusButtons.dataset.state = state;
+  if (!focusPauseText || !focusPauseIcon || !focusResumeIcon) {
+    return;
+  }
 
   // ========================================
   // STOP
@@ -922,6 +1388,7 @@ function updateFocusUI() {
     focusPauseText.textContent = "Pause";
 
     focusPauseIcon.style.display = "block";
+
     focusResumeIcon.style.display = "none";
 
     return;
@@ -935,6 +1402,7 @@ function updateFocusUI() {
     focusPauseText.textContent = "Pause";
 
     focusPauseIcon.style.display = "block";
+
     focusResumeIcon.style.display = "none";
 
     return;
@@ -948,9 +1416,8 @@ function updateFocusUI() {
     focusPauseText.textContent = "Resume";
 
     focusPauseIcon.style.display = "none";
-    focusResumeIcon.style.display = "block";
 
-    return;
+    focusResumeIcon.style.display = "block";
   }
 }
 
@@ -958,36 +1425,40 @@ function updateFocusUI() {
 // START FOCUS
 // ========================================
 
-focusStartBtn.addEventListener("click", () => {
-  const time = Number(localStorage.getItem("focus-time-now"));
+if (focusStartBtn) {
+  focusStartBtn.addEventListener("click", () => {
+    const time = Number(localStorage.getItem("focus-time-now"));
 
-  if (!time || time <= 0) {
-    return;
-  }
+    if (!Number.isFinite(time) || time <= 0) {
+      return;
+    }
 
-  setFocusState("start");
+    setFocusState("start");
 
-  updateFocusUI();
-});
+    updateFocusUI();
+  });
+}
 
 // ========================================
 // PAUSE / RESUME
 // ========================================
 
-focusPauseBtn.addEventListener("click", () => {
-  const state = getFocusState();
+if (focusPauseBtn) {
+  focusPauseBtn.addEventListener("click", () => {
+    const state = getFocusState();
 
-  if (state === "start") {
-    setFocusState("pending");
-  } else if (state === "pending") {
-    setFocusState("start");
-  }
+    if (state === "start") {
+      setFocusState("pending");
+    } else if (state === "pending") {
+      setFocusState("start");
+    }
 
-  updateFocusUI();
-});
+    updateFocusUI();
+  });
+}
 
 // ========================================
-// TIMER PROGRESS
+// PROGRESS CIRCLE
 // ========================================
 
 const progressCircle = document.querySelector(".focus-ring-progress");
@@ -996,30 +1467,50 @@ const radius = 82;
 
 const circumference = 2 * Math.PI * radius;
 
-progressCircle.style.strokeDasharray = circumference;
+if (progressCircle) {
+  progressCircle.style.strokeDasharray = String(circumference);
+
+  progressCircle.style.strokeDashoffset = String(circumference);
+}
+
+// ========================================
+// SET PROGRESS
+// ========================================
 
 function setProgress(percent) {
-  const progress = Math.max(0, Math.min(100, percent));
+  if (!progressCircle) {
+    return;
+  }
+
+  const progress = Math.max(0, Math.min(100, Number(percent) || 0));
 
   const offset = circumference - (progress / 100) * circumference;
 
-  progressCircle.style.strokeDashoffset = offset;
+  progressCircle.style.strokeDashoffset = String(offset);
 }
 
 // ========================================
 // TIMER DISPLAY
 // ========================================
 
-// ========================================
-// TIMER DISPLAY
-// ========================================
-
 function timer_down(sec) {
-  const hour_duc = document.querySelector("#hour-span-txt");
-  const minute_duc = document.querySelector("#minute-span-txt");
-  const second_duc = document.querySelector("#second-span-txt");
+  const hourDisplay = document.querySelector("#hour-span-txt");
+
+  const minuteDisplay = document.querySelector("#minute-span-txt");
+
+  const secondDisplay = document.querySelector("#second-span-txt");
+
+  if (!hourDisplay || !minuteDisplay || !secondDisplay) {
+    return;
+  }
 
   sec = Number(sec);
+
+  if (!Number.isFinite(sec)) {
+    sec = 0;
+  }
+
+  sec = Math.max(0, Math.floor(sec));
 
   // ========================================
   // GET REAL TIME
@@ -1035,6 +1526,8 @@ function timer_down(sec) {
     const progress = (sec / totalTime) * 100;
 
     setProgress(progress);
+  } else {
+    setProgress(0);
   }
 
   // ========================================
@@ -1042,9 +1535,11 @@ function timer_down(sec) {
   // ========================================
 
   if (sec <= 0) {
-    hour_duc.textContent = "00";
-    minute_duc.textContent = "00";
-    second_duc.textContent = "00";
+    hourDisplay.textContent = "00";
+
+    minuteDisplay.textContent = "00";
+
+    secondDisplay.textContent = "00";
 
     setProgress(0);
 
@@ -1068,17 +1563,15 @@ function timer_down(sec) {
   const second = (sec % 60).toString().padStart(2, "0");
 
   // ========================================
-  // UPDATE TIMER UI
+  // UPDATE UI
   // ========================================
 
-  hour_duc.textContent = hour;
-  minute_duc.textContent = minute;
-  second_duc.textContent = second;
-}
+  hourDisplay.textContent = hour;
 
-// ========================================
-// TIMER
-// ========================================
+  minuteDisplay.textContent = minute;
+
+  secondDisplay.textContent = second;
+}
 
 // ========================================
 // TIMER
@@ -1087,69 +1580,67 @@ function timer_down(sec) {
 setInterval(() => {
   const state = getFocusState();
 
-  // فقط در حالت START زمان کم شود
+  // فقط در حالت START
   if (state !== "start") {
     return;
   }
 
-  const getTime = localStorage.getItem("focus-time-now");
+  const storedTime = localStorage.getItem("focus-time-now");
 
-  if (getTime === null) {
+  if (storedTime === null) {
     return;
   }
 
-  const currentTime = Number(getTime);
+  const currentTime = Number(storedTime);
 
-  // ========================================
-  // TIMER ALREADY FINISHED
-  // ========================================
-
-  if (currentTime <= 0) {
+  if (!Number.isFinite(currentTime)) {
     localStorage.setItem("focus-time-now", "0");
-    localStorage.setItem("focus-time-real", "0");
 
     setFocusState("stop");
 
     timer_down(0);
+
     updateFocusUI();
 
     return;
   }
 
   // ========================================
-  // DECREASE TIME
+  // FINISHED
   // ========================================
 
-  const newTime = currentTime - 1;
+  if (currentTime <= 0) {
+    localStorage.setItem("focus-time-now", "0");
+
+    setFocusState("stop");
+
+    timer_down(0);
+
+    updateFocusUI();
+
+    return;
+  }
+
+  // ========================================
+  // DECREASE
+  // ========================================
+
+  const newTime = Math.max(0, currentTime - 1);
 
   localStorage.setItem("focus-time-now", String(newTime));
 
   timer_down(newTime);
 
   // ========================================
-  // TIMER FINISHED
+  // FINISHED
   // ========================================
 
   if (newTime <= 0) {
-    localStorage.setItem("focus-time-now", "0");
-
     setFocusState("stop");
 
     updateFocusUI();
   }
 }, 1000);
-
-// ========================================
-// INITIAL UI
-// ========================================
-
-timer_down(localStorage.getItem("focus-time-now") || 0);
-
-updateFocusUI();
-
-// ========================================
-// CLEAR FOCUS SESSION
-// ========================================
 
 // ========================================
 // CLEAR FOCUS SESSION
@@ -1161,13 +1652,25 @@ async function clearFocusSession() {
   // ========================================
 
   localStorage.setItem("focus-time-now", "0");
+
   localStorage.setItem("focus-time-real", "0");
+
   localStorage.setItem("focus-task", "There is no task");
 
-  setFocusState("stop");
+  selectedFocusTask = "";
 
   // ========================================
-  // UPDATE TASK
+  // UPDATE TASK PLACEHOLDER
+  // ========================================
+
+  if (taskDropdownObject.taskPlaceholder) {
+    taskDropdownObject.taskPlaceholder.textContent = "Select a task";
+
+    taskDropdownObject.taskPlaceholder.style.color = "var(--text-muted)";
+  }
+
+  // ========================================
+  // UPDATE MAIN TASK
   // ========================================
 
   const focusTaskText = document.querySelector(".focus-task p");
@@ -1175,6 +1678,12 @@ async function clearFocusSession() {
   if (focusTaskText) {
     focusTaskText.textContent = "There is no task";
   }
+
+  // ========================================
+  // STATE
+  // ========================================
+
+  setFocusState("stop");
 
   // ========================================
   // UPDATE TIMER
@@ -1189,28 +1698,100 @@ async function clearFocusSession() {
   updateFocusUI();
 
   // ========================================
+  // HIDE MODAL / DROPDOWN
+  // ========================================
+
+  hide_select_task_dropdown();
+
+  // ========================================
   // DELETE FROM DATABASE
   // ========================================
 
   try {
-    const response = await fetch("delete-focus-db.php");
+    const response = await fetch("delete-focus-db.php", {
+      method: "GET",
+
+      cache: "no-store",
+
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to delete focus: ${response.status}`);
+    }
+
+    const result = await response.json().catch(() => null);
+
+    if (result && result.success === false) {
+      console.error("Delete focus failed:", result.message);
     }
   } catch (error) {
     console.error("Error deleting focus:", error);
   }
 }
 
-taskDropdownObject.focusResetBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
+// ========================================
+// RESET BUTTON
+// ========================================
 
-  await clearFocusSession();
-});
+if (taskDropdownObject.focusResetBtn) {
+  taskDropdownObject.focusResetBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
 
-focusStopBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
+    await clearFocusSession();
+  });
+}
 
-  await clearFocusSession();
-});
+// ========================================
+// STOP BUTTON
+// ========================================
+
+if (focusStopBtn) {
+  focusStopBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    await clearFocusSession();
+  });
+}
+
+// ========================================
+// INITIAL UI
+// ========================================
+
+const initialFocusTime = localStorage.getItem("focus-time-now") || 0;
+
+timer_down(initialFocusTime);
+
+updateFocusUI();
+
+// ========================================
+// INITIAL TASK
+// ========================================
+
+const storedFocusTask = localStorage.getItem("focus-task");
+
+if (storedFocusTask && storedFocusTask !== "There is no task") {
+  selectedFocusTask = storedFocusTask;
+
+  if (taskDropdownObject.taskPlaceholder) {
+    taskDropdownObject.taskPlaceholder.textContent = storedFocusTask;
+
+    taskDropdownObject.taskPlaceholder.style.color = "var(--text-primary)";
+  }
+}
+
+// ========================================
+// INITIAL MAIN FOCUS TASK
+// ========================================
+
+const initialFocusTask = localStorage.getItem("focus-task");
+
+if (initialFocusTask && initialFocusTask !== "There is no task") {
+  const focusTaskText = document.querySelector(".focus-task p");
+
+  if (focusTaskText) {
+    focusTaskText.textContent = initialFocusTask;
+  }
+}

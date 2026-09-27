@@ -3,9 +3,9 @@
 	<div class="modal__backdrop"></div>
 	<form class="todo-form" method="POST" data-id="">
 		<div class="field">
-			<label class="field__label" for="task">Task</label>
+			<label class="field__label" for="edit-task">Task</label>
 			<input
-				id="task"
+				id="edit-task"
 				name="task"
 				class="field__input"
 				type="text"

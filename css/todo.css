@@ -648,7 +648,7 @@ body {
 
 .todo-body {
   flex: 1;
-  min-height: 0;
+  min-height: 100px;
   overflow: hidden;
 }
 

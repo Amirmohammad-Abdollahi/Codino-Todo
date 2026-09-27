@@ -1,22 +1,10 @@
 import { startStep, completeStep, finishLoader } from "./load-animation.js";
-import { goal_input_value } from "./export-input-value.js";
-import { load_note_mess } from "./note-item.js";
-
-localStorage.setItem("focus-state", "stop");
-
-//#region بخش کاربر
 
 const UI_OBJ = {
   usernameView: document.getElementById("usernameView"),
   profile: document.querySelector(".profile img"),
-  profileSetupForm: document.getElementById("profileSetupForm"),
-  profile_modal: document.querySelector(".profile-modal-wrapper"),
   goal_name: document.querySelector(".goal-name"),
 };
-
-//#endregion
-
-//#region بخش Goal
 
 const goalObj = {
   goal_title: document.querySelector(".goal-name"),
@@ -29,15 +17,33 @@ const goalObj = {
   deadline_footer: document.querySelector(".stat-daedline"),
 };
 
+const streakObj = {
+  streakTime: document.querySelector(".streak-value"),
+};
+
+const priorityClass = ["High", "Medium", "Low"];
+const statusClass = ["Pending", "Progress", "Completed"];
+
+const NORMAL_USER_CODES = ["GUEST", "PROFILE_NOT_COMPLETED"];
+
+const NORMAL_GOAL_CODES = ["GUEST", "PROFILE_NOT_COMPLETED", "GOAL_NOT_FOUND"];
+
+const NORMAL_STREAK_CODES = [
+  "GUEST",
+  "STREAK_NOT_FOUND",
+  "PROFILE_NOT_COMPLETED",
+];
+
+/* --------------------------------------------------
+   Helpers
+-------------------------------------------------- */
+
 function getRemainingTime(deadline) {
   const now = new Date();
   const end = new Date(deadline);
 
-  if (isNaN(end.getTime())) {
-    return "";
-  }
+  if (isNaN(end.getTime())) return "";
 
-  // اگر تاریخ گذشته باشد
   if (end <= now) {
     return "Expired";
   }
@@ -48,31 +54,22 @@ function getRemainingTime(deadline) {
   let hours = end.getHours() - now.getHours();
   let minutes = end.getMinutes() - now.getMinutes();
 
-  // دقیقه
   if (minutes < 0) {
     minutes += 60;
     hours--;
   }
 
-  // ساعت
   if (hours < 0) {
     hours += 24;
     days--;
   }
 
-  // روز
   if (days < 0) {
-    const previousMonth = new Date(
-      end.getFullYear(),
-      end.getMonth(),
-      0,
-    ).getDate();
+    days += new Date(end.getFullYear(), end.getMonth(), 0).getDate();
 
-    days += previousMonth;
     months--;
   }
 
-  // ماه
   if (months < 0) {
     months += 12;
     years--;
@@ -100,15 +97,15 @@ function getRemainingTime(deadline) {
 function getTimePast(date) {
   const time = new Date(date).getTime();
 
-  if (isNaN(time)) {
-    return "";
-  }
+  if (isNaN(time)) return "";
 
   const diff = Date.now() - time;
 
-  const minute = Math.floor(diff / (1000 * 60));
-  const hour = Math.floor(diff / (1000 * 60 * 60));
-  const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (diff < 0) return "";
+
+  const minute = Math.floor(diff / 60000);
+  const hour = Math.floor(diff / 3600000);
+  const day = Math.floor(diff / 86400000);
   const month = Math.floor(day / 30);
   const year = Math.floor(day / 365);
 
@@ -135,24 +132,11 @@ function getTimePast(date) {
   return rtf.format(-year, "year");
 }
 
-const priorityClass = ["High", "Medium", "Low"];
-const statusClass = ["Pending", "Progress", "Completed"];
-
-//#endregion
-
-//#region بخش Streak
-
-const streakObj = {
-  streakTime: document.querySelector(".streak-value"),
-};
-
 function streakDate(dateString) {
   const start = new Date(dateString);
   const now = new Date();
 
-  if (isNaN(start.getTime())) {
-    return "";
-  }
+  if (isNaN(start.getTime())) return "";
 
   let years = now.getFullYear() - start.getFullYear();
   let months = now.getMonth() - start.getMonth();
@@ -160,31 +144,22 @@ function streakDate(dateString) {
   let hours = now.getHours() - start.getHours();
   let minutes = now.getMinutes() - start.getMinutes();
 
-  // دقیقه
   if (minutes < 0) {
     minutes += 60;
     hours--;
   }
 
-  // ساعت
   if (hours < 0) {
     hours += 24;
     days--;
   }
 
-  // روز
   if (days < 0) {
-    const daysInPrevMonth = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      0,
-    ).getDate();
+    days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
 
-    days += daysInPrevMonth;
     months--;
   }
 
-  // ماه
   if (months < 0) {
     months += 12;
     years--;
@@ -209,21 +184,105 @@ function streakDate(dateString) {
   return `${minutes} minute${minutes > 1 ? "s" : ""}`;
 }
 
-//#endregion
+function paintDelay(ms) {
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      setTimeout(resolve, ms);
+    });
+  });
+}
 
-document.addEventListener("DOMContentLoaded", async () => {
-  //#region شروع Loader
+function withTimeout(work, ms, label) {
+  return new Promise((resolve, reject) => {
+    let finished = false;
 
-  startStep("init");
-  startStep("tasks");
-  startStep("user");
-  startStep("ready");
+    const timer = setTimeout(() => {
+      if (finished) return;
 
-  //#endregion
+      finished = true;
+      reject(new Error(`${label} timed out after ${ms}ms`));
+    }, ms);
 
-  //#region Message Box
+    Promise.resolve()
+      .then(work)
+      .then((value) => {
+        if (finished) return;
 
+        finished = true;
+        clearTimeout(timer);
+        resolve(value);
+      })
+      .catch((error) => {
+        if (finished) return;
+
+        finished = true;
+        clearTimeout(timer);
+        reject(error);
+      });
+  });
+}
+
+async function fetchJSON(url, ms = 6000) {
+  const controller = new AbortController();
+
+  const timer = setTimeout(() => {
+    controller.abort();
+  }, ms);
+
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    const text = await response.text();
+
+    let result;
+
+    try {
+      result = JSON.parse(text);
+    } catch (error) {
+      throw new Error(`Invalid JSON from ${url}`);
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        result?.message || `Request failed with status ${response.status}`,
+      );
+    }
+
+    return result;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/* --------------------------------------------------
+   Loader Step Runner
+-------------------------------------------------- */
+
+async function runStep(stepName, work) {
+  startStep(stepName);
+
+  try {
+    await work();
+  } catch (error) {
+    console.error(`LOADER STEP ERROR [${stepName}]`, error);
+  } finally {
+    // این finally عمداً تضمین می‌کند step گیر نکند
+    completeStep(stepName);
+  }
+}
+
+/* --------------------------------------------------
+   Message
+-------------------------------------------------- */
+
+function setupMessageBox() {
   const messageBox = document.querySelector(".message-box-container");
+
   const messageBoxText = messageBox?.querySelector("p");
 
   let messageTimeout = null;
@@ -245,201 +304,164 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 5000);
   }
 
-  //#endregion
+  return {
+    showMessage,
+  };
+}
 
-  //#region Fetch Helper
+/* --------------------------------------------------
+   Main Loader
+-------------------------------------------------- */
 
-  async function fetchJSON(url) {
-    const response = await fetch(url);
+async function initializeWorkspace() {
+  const { showMessage } = setupMessageBox();
 
-    let result;
-
-    try {
-      result = await response.json();
-    } catch (error) {
-      throw new Error(`Invalid JSON response from ${url}`);
-    }
-
-    if (!response.ok) {
-      throw new Error(
-        result?.message || `Request failed with status ${response.status}`,
-      );
-    }
-
-    return result;
+  /* Focus state */
+  try {
+    localStorage.setItem("focus-state", "stop");
+  } catch (error) {
+    console.error("focus-state error:", error);
   }
 
-  //#endregion
+  /* Dynamic imports */
+  let load_note_mess = async () => {};
+  let goal_input_value = () => {};
 
   try {
-    //#region User
+    const noteModule = await import("./note-item.js");
 
-    try {
-      const userResult = await fetchJSON("php-sql/get_user.php");
+    if (typeof noteModule.load_note_mess === "function") {
+      load_note_mess = noteModule.load_note_mess;
+    }
+  } catch (error) {
+    console.error("note-item.js import error:", error);
+  }
 
-      if (userResult.success && userResult.data?.user) {
-        const user = userResult.data.user;
+  try {
+    const goalInputModule = await import("./export-input-value.js");
 
-        if (UI_OBJ.usernameView) {
-          UI_OBJ.usernameView.textContent = user.display_name ?? "";
-        }
+    if (typeof goalInputModule.goal_input_value === "function") {
+      goal_input_value = goalInputModule.goal_input_value;
+    }
+  } catch (error) {
+    console.error("export-input-value.js import error:", error);
+  }
 
-        if (UI_OBJ.profile && user.avatar) {
-          UI_OBJ.profile.src = user.avatar;
-        }
+  /* ==================================================
+     STEP 1 - INIT
+  ================================================== */
 
-        if (UI_OBJ.goal_name) {
-          UI_OBJ.goal_name.textContent = user.daily_goal ?? "";
-        }
-      } else {
-        /*
-         * برای Guest یا هر وضعیت عادی،
-         * فقط پیام را نمایش نمی‌دهیم مگر API واقعاً
-         * یک خطای قابل نمایش داشته باشد.
-         */
+  await runStep("init", async () => {
+    await paintDelay(120);
+  });
 
-        if (
-          userResult.code &&
-          !["GUEST", "PROFILE_NOT_COMPLETED"].includes(userResult.code)
-        ) {
-          showMessage(userResult.message);
-        }
+  /* ==================================================
+     STEP 2 - USER
+  ================================================== */
+
+  await runStep("user", async () => {
+    const userResult = await fetchJSON("php-sql/get_user.php", 6000);
+
+    if (userResult.success && userResult.data?.user) {
+      const user = userResult.data.user;
+
+      if (UI_OBJ.usernameView) {
+        UI_OBJ.usernameView.textContent = user.display_name ?? "";
       }
-    } catch (error) {
-      console.error("get_user.php error:", error);
 
-      showMessage("Could not load user information.");
+      if (UI_OBJ.profile && user.avatar) {
+        UI_OBJ.profile.src = user.avatar;
+      }
+
+      if (UI_OBJ.goal_name) {
+        UI_OBJ.goal_name.textContent = user.daily_goal ?? "";
+      }
+
+      return;
     }
 
-    /*
-     * این مرحله باید در هر حالت تمام شود.
-     * حتی Guest بودن نباید Loader را متوقف کند.
-     */
+    if (userResult.code && !NORMAL_USER_CODES.includes(userResult.code)) {
+      showMessage(userResult.message || "Could not load user information.");
+    }
+  });
 
-    completeStep("user");
+  /* ==================================================
+     STEP 3 - TASKS / WORKSPACE
+  ================================================== */
 
-    //#endregion
-
-    //#region Goal
+  await runStep("tasks", async () => {
+    /* ---------------- GOAL ---------------- */
 
     try {
-      const goalResult = await fetchJSON("get-info/get_goal.php");
-
-      /*
-       * -----------------------------------------------------
-       * Goal وجود دارد
-       * -----------------------------------------------------
-       */
+      const goalResult = await fetchJSON("get-info/get_goal.php", 6000);
 
       if (goalResult.code === "GOAL_LOADED") {
         const goal = goalResult.data?.goal;
 
-        if (!goal) {
-          throw new Error("GOAL_LOADED received without goal data.");
-        }
+        if (goal) {
+          if (goalObj.goal_title) {
+            goalObj.goal_title.textContent = goal.title ?? "";
+          }
 
-        if (goalObj.goal_title) {
-          goalObj.goal_title.textContent = goal.title ?? "";
-        }
+          if (goalObj.goal_subtitle) {
+            goalObj.goal_subtitle.textContent = goal.description ?? "";
+          }
 
-        if (goalObj.goal_subtitle) {
-          goalObj.goal_subtitle.textContent = goal.description ?? "";
-        }
+          if (goalObj.deadline) {
+            goalObj.deadline.textContent = getRemainingTime(goal.deadLine);
+          }
 
-        if (goalObj.deadline) {
-          goalObj.deadline.textContent = getRemainingTime(goal.deadLine);
-        }
+          if (goalObj.deadline_footer) {
+            goalObj.deadline_footer.textContent = getTimePast(goal.updated_at);
+          }
 
-        if (goalObj.deadline_footer) {
-          goalObj.deadline_footer.textContent = getTimePast(goal.updated_at);
-        }
+          if (goalObj.priority) {
+            priorityClass.forEach((item) => {
+              goalObj.priority.classList.remove(item);
+            });
 
-        // حذف Priority های قبلی
-        if (goalObj.priority) {
-          priorityClass.forEach((item) => {
-            goalObj.priority.classList.remove(item);
-          });
+            if (goal.priority) {
+              goalObj.priority.classList.add(goal.priority);
+            }
+          }
 
-          if (goal.priority) {
-            goalObj.priority.classList.add(goal.priority);
+          if (goalObj.priorityTxt) {
+            goalObj.priorityTxt.textContent = goal.priority ?? "";
+          }
+
+          if (goalObj.status) {
+            statusClass.forEach((item) => {
+              goalObj.status.classList.remove(item);
+            });
+
+            if (goal.status) {
+              goalObj.status.classList.add(goal.status);
+            }
+          }
+
+          if (goalObj.statusTxt) {
+            goalObj.statusTxt.textContent = goal.status ?? "";
           }
         }
-
-        if (goalObj.priorityTxt) {
-          goalObj.priorityTxt.textContent = goal.priority ?? "";
-        }
-
-        // حذف Status های قبلی
-        if (goalObj.status) {
-          statusClass.forEach((item) => {
-            goalObj.status.classList.remove(item);
-          });
-
-          if (goal.status) {
-            goalObj.status.classList.add(goal.status);
-          }
-        }
-
-        if (goalObj.statusTxt) {
-          goalObj.statusTxt.textContent = goal.status ?? "";
-        }
-      } else if (goalResult.code === "GUEST") {
-        /*
-         * -----------------------------------------------------
-         * Guest
-         * -----------------------------------------------------
-         */
-        console.log("Guest user. No goal data available.");
-      } else if (goalResult.code === "PROFILE_NOT_COMPLETED") {
-        /*
-         * -----------------------------------------------------
-         * Profile هنوز کامل نشده
-         * -----------------------------------------------------
-         */
-        console.log("Profile is not completed yet.");
-      } else if (goalResult.code === "GOAL_NOT_FOUND") {
-        /*
-         * -----------------------------------------------------
-         * Goal هنوز ساخته نشده
-         * -----------------------------------------------------
-         */
-      } else {
-        /*
-         * -----------------------------------------------------
-         * خطای واقعی
-         * -----------------------------------------------------
-         */
-        // showMessage(goalResult.message || "Could not load goal information.");
+      } else if (
+        goalResult.code &&
+        !NORMAL_GOAL_CODES.includes(goalResult.code)
+      ) {
+        console.error("get_goal.php unexpected code:", goalResult.code);
       }
     } catch (error) {
-      // console.error("get_goal.php error:", error);
-
-      // showMessage("Could not load goal information.");
+      console.error("get_goal.php error:", error);
     }
 
-    /*
-     * Goal در هر شرایطی مرحله‌اش تمام است.
-     */
-
-    completeStep("tasks");
-
-    //#endregion
-
-    //#region Notes
+    /* ---------------- NOTES ---------------- */
 
     try {
-      await load_note_mess();
+      await withTimeout(() => load_note_mess(), 5000, "load_note_mess");
     } catch (error) {
       console.error("load_note_mess error:", error);
-
-      /*
-       * Notes نباید باعث گیر کردن Loader شود.
-       */
     }
 
-    //#endregion
-
-    //#region Focus Task
+    /* ---------------- FOCUS TASK ---------------- */
 
     try {
       const focusTaskElement = document.querySelector(".focus-task p");
@@ -452,86 +474,93 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error("Focus task error:", error);
     }
+  });
 
-    //#endregion
+  /* ==================================================
+     STEP 4 - READY
+  ================================================== */
 
-    //#region تمام شدن مراحل اصلی Loader
+  await runStep("ready", async () => {
+    await paintDelay(120);
+  });
 
-    completeStep("init");
-    completeStep("ready");
+  /*
+   * مهم:
+   * حتی اگر چیزی در بالا غیرمنتظره خراب شده باشد،
+   * لودر نباید روی صفحه بماند.
+   */
+  finishLoader();
 
-    /*
-     * از اینجا به بعد Dashboard اصلی دیگر
-     * نباید منتظر Streak یا Goal Input بماند.
-     */
+  /* ==================================================
+     BACKGROUND DATA
+     این‌ها دیگر نباید مانع باز شدن صفحه شوند.
+  ================================================== */
 
-    finishLoader();
+  loadStreak(showMessage);
+  loadGoalInput(goal_input_value);
+}
 
-    //#endregion
+/* --------------------------------------------------
+   Background: Streak
+-------------------------------------------------- */
 
-    //#region Streak
+async function loadStreak(showMessage) {
+  try {
+    const streakResult = await fetchJSON("get-info/get_streak.php", 6000);
 
-    try {
-      const streakResult = await fetchJSON("get-info/get_streak.php");
+    if (
+      streakResult.success &&
+      streakResult.data?.created_at &&
+      streakObj.streakTime
+    ) {
+      streakObj.streakTime.textContent = streakDate(
+        streakResult.data.created_at,
+      );
 
-      if (
-        streakResult.success &&
-        streakResult.data?.created_at &&
-        streakObj.streakTime
-      ) {
-        streakObj.streakTime.textContent = streakDate(
-          streakResult.data.created_at,
-        );
-      } else if (
-        /*
-         * اگر Streak برای Guest یا کاربر جدید
-         * وجود نداشته باشد، خطای UI نشان نمی‌دهیم.
-         */
-        streakResult.code &&
-        !["GUEST", "STREAK_NOT_FOUND", "PROFILE_NOT_COMPLETED"].includes(
-          streakResult.code,
-        )
-      ) {
-        showMessage(streakResult.message);
-      }
-    } catch (error) {
-      console.error("get_streak.php error:", error);
-
-      /*
-       * Streak اطلاعات جانبی است،
-       * پس کل صفحه را خراب نمی‌کنیم.
-       */
+      return;
     }
 
-    //#endregion
-
-    //#region Goal Input
-
-    try {
-      goal_input_value();
-    } catch (error) {
-      console.error("goal_input_value error:", error);
+    if (streakResult.code && !NORMAL_STREAK_CODES.includes(streakResult.code)) {
+      showMessage(streakResult.message || "Could not load streak information.");
     }
-
-    //#endregion
   } catch (error) {
-    /*
-     * این catch برای خطاهای غیرمنتظره‌ی اصلی است.
-     */
-
-    console.error("Info loader error:", error);
-
-    console.error("Error message:", error?.message);
-
-    console.error("Error stack:", error?.stack);
-  } finally {
-    /*
-     * این مهم‌ترین قسمت است.
-     *
-     * حتی اگر یک خطای غیرمنتظره قبل از finishLoader
-     * رخ بدهد، Loader نباید برای همیشه روی صفحه بماند.
-     */
-
-    finishLoader();
+    console.error("get_streak.php error:", error);
   }
-});
+}
+
+/* --------------------------------------------------
+   Background: Goal Input
+-------------------------------------------------- */
+
+function loadGoalInput(goal_input_value) {
+  try {
+    goal_input_value();
+  } catch (error) {
+    console.error("goal_input_value error:", error);
+  }
+}
+
+/* --------------------------------------------------
+   Start
+-------------------------------------------------- */
+
+function start() {
+  initializeWorkspace().catch((error) => {
+    console.error("Workspace initialization error:", error);
+
+    /*
+     * حتی اگر خود initializeWorkspace
+     * یک خطای پیش‌بینی‌نشده داشته باشد،
+     * لودر باز هم باید بسته شود.
+     */
+    finishLoader();
+  });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", start, {
+    once: true,
+  });
+} else {
+  start();
+}

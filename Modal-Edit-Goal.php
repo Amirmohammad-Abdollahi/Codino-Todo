@@ -45,7 +45,8 @@
 							name="goalDeadline"
 							aria-haspopup="dialog"
 							aria-expanded="false"
-							aria-controls="goalDeadlineCalendar">
+							aria-controls="goalDeadlineCalendar"
+							aria-label="data-picker">
 
 						<button
 							type="button"

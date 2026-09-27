@@ -165,9 +165,9 @@
   }
 
   .date-picker__panel {
-    left: 9% !important;
-    top: -745% !important;
-    width: 300px;
+    left: 12% !important;
+    top: -910% !important;
+    width: 265px;
     z-index: 10000;
     background: var(--bg-surface-hover);
   }
@@ -300,7 +300,7 @@
 
   .quick-notes {
     display: block;
-    max-height: 100vh !important;
+    max-height: 1000dvh !important;
   }
 
   .profile {
@@ -704,9 +704,9 @@
   }
 
   .date-picker__panel {
-    left: 0% !important;
-    top: -725% !important;
-    width: 275px;
+    left: 4% !important;
+    top: -900% !important;
+    width: 250px;
   }
 
   .focus-session-card {
