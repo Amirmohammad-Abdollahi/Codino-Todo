@@ -45,7 +45,7 @@ task_object.form.addEventListener("submit", async (e) => {
   task_object.submitButton.textContent = "...Adding Task";
 
   try {
-    const response = await fetch("php-sql/add_task_db.php", {
+    const response = await fetch("api/add_task_db.php", {
       method: "POST",
       body: formData,
     });
@@ -113,7 +113,7 @@ async function loadTasks(sort = currentSort) {
 
     priority: taskFilter.priority,
   });
-  const response = await fetch(`get-info/get_tasks.php?${params}`);
+  const response = await fetch(`api/get_tasks.php?${params}`);
 
   const result = await response.json();
   task_object.todo_counter__number.textContent = `${result.data.length}`;
@@ -268,7 +268,7 @@ document.addEventListener("change", async (e) => {
   const state = e.target.checked ? "Complete" : "Incomplete";
 
   try {
-    const response = await fetch("get-info/update_task_state.php", {
+    const response = await fetch("api/update_task_state.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -336,7 +336,7 @@ document.addEventListener("click", async (e) => {
   const item_delete = deleteBtn.closest(".todo-item");
   const id = item_delete.dataset.id;
 
-  const response = await fetch("get-info/delete_task.php", {
+  const response = await fetch("api/delete_task.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -374,7 +374,7 @@ document.addEventListener("click", async (e) => {
   const item_edit = editBtn.closest(".todo-item");
   const id = item_edit.dataset.id;
 
-  const response = await fetch("get-info/get_edit_task.php", {
+  const response = await fetch("api/get_edit_task.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -416,7 +416,7 @@ Objects.edit_form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const formData = new FormData(Objects.edit_form);
   formData.append("id", Objects.edit_form.dataset.id);
-  const send_form = await fetch("get-info/post_edit_task.php", {
+  const send_form = await fetch("api/post_edit_task.php", {
     method: "POST",
     body: formData,
   });
@@ -549,7 +549,7 @@ const Ui_content = {
 
 async function progress() {
   try {
-    const response = await fetch("get-info/get_progress.php");
+    const response = await fetch("api/get_progress.php");
     const result = await response.json();
 
     if (!result.success) {

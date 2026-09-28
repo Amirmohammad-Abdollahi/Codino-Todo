@@ -2,7 +2,7 @@
 
 header("Content-Type: application/json");
 
-require_once "../php-sql/config.php";
+require_once "../api/config.php";
 
 function Response(bool $success, string $message = "", array $data = []): void
 {

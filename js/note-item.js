@@ -4,7 +4,7 @@ export async function load_note_mess(e) {
   const note_item_box = document.querySelector(".child_quick_main");
 
   try {
-    const response = await fetch(`get-info/get_note.php?t=${Date.now()}`, {
+    const response = await fetch(`api/get_note.php?t=${Date.now()}`, {
       cache: "no-store",
     });
 

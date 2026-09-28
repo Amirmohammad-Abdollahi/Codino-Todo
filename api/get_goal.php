@@ -2,8 +2,8 @@
 
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once "../php-sql/config.php";
-require_once "../php-sql/cookie.php";
+require_once "../api/config.php";
+require_once "../api/cookie.php";
 
 $user_id = getUserId();
 

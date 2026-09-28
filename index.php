@@ -1,8 +1,8 @@
 <?php
-require_once "php-sql/cookie.php";
+require_once "api/cookie.php";
 $user_id = getUserId();
 
-require_once "php-sql/config.php";
+require_once "api/config.php";
 
 $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
 $stmt->execute([$user_id]);
@@ -28,7 +28,7 @@ if (!$user) {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Codino Todo is a modern task management app for organizing tasks, setting priorities, tracking progress, and improving productivity.">
 	<title>Codino Todo App</title>
-	<link rel="icon" href="icons/CODINO.ico">
+	<link rel="icon" href="./asset/icons/CODINO.ico">
 	<link rel="stylesheet" href="css/todo.css">
 	<link rel="stylesheet" href="css/header.css">
 	<link rel="stylesheet" href="css/variable.css">
@@ -409,7 +409,7 @@ if (!$user) {
 					<div class="header-chart">
 						<div class="title-chart-section">
 							<div class="shape-title">
-								<img src="Images/chart-svg.png" alt="chart-svg">
+								<img src="asset/icons/chart-svg.png" alt="chart-svg">
 							</div>
 							<div class="title-text">
 								<h2>Overview</h2>

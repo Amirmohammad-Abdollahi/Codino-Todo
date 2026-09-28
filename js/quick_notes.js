@@ -86,7 +86,7 @@ document.addEventListener("click", async (e) => {
   const note_box_target = delete_note_btn.closest(".message_note_box");
   const id_note = note_box_target.dataset.id;
 
-  const response = await fetch("get-info/delete_note.php", {
+  const response = await fetch("api/delete_note.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -111,7 +111,7 @@ document.addEventListener("click", async (e) => {
   const id_note = note_box.dataset.id;
   const pin = note_box.dataset.pin == "1" ? 0 : 1;
 
-  const response = await fetch("get-info/edit-pin.php", {
+  const response = await fetch("api/edit-pin.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -149,7 +149,7 @@ note_object.add_quick_note.addEventListener("click", show_note_modal);
 
 note_object.add_note_form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const response = await fetch("php-sql/post-note-info.php", {
+  const response = await fetch("api/post-note-info.php", {
     method: "POST",
     body: new FormData(e.target),
   });

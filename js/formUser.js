@@ -24,7 +24,7 @@ const webObject = {
 webObject.profileSetupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const response = await fetch("php-sql/profile.php", {
+  const response = await fetch("api/profile.php", {
     method: "POST",
     body: new FormData(e.target),
   });

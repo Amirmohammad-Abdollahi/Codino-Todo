@@ -44,7 +44,7 @@
 
 						<img
 							id="profileAvatarPreview"
-							src="Images/default-avatar.png"
+							src="asset/default-avatar.png"
 							alt="">
 
 						<div class="profile-avatar-overlay">

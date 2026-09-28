@@ -99,7 +99,7 @@ const statusClass = ["Pending", "Progress", "Completed"];
 const goalForm = document.getElementById("goalForm");
 goalForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const response = await fetch("php-sql/edit_modal_process.php", {
+  const response = await fetch("api/edit_modal_process.php", {
     method: "POST",
     body: new FormData(e.target),
   });

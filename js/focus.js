@@ -873,7 +873,7 @@ async function loadFocusTasks() {
     priority: "all",
   });
 
-  const request = fetch(`get-info/get_tasks.php?${params.toString()}`, {
+  const request = fetch(`api/get_tasks.php?${params.toString()}`, {
     method: "GET",
 
     cache: "no-store",
@@ -1200,7 +1200,7 @@ if (focusForm) {
     
 
     try {
-      const response = await fetch("php-sql/create-focus.php", {
+      const response = await fetch("api/create-focus.php", {
         method: "POST",
 
         headers: {

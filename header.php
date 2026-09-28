@@ -6,7 +6,7 @@
 				<div id="header-title-text-fully"><span id="title-header-left"></span>,</div>
 				<div id="usernameView">User</div>
 			</h2>
-			<img src="icons/Sun-greeting-Icom.png" alt="svg خورشید" loading="lazy">
+			<img src="./asset/icons/Sun-greeting-Icom.png" alt="svg خورشید" loading="lazy">
 		</div>
 		<div class="greeting-subtitle">
 			<p></p>
@@ -169,7 +169,7 @@
 
 		<!-- Profile -->
 		<div class="profile">
-			<img src="Images/default-avatar.png" alt="Profile Image" draggable="false">
+			<img src="asset/default-avatar.png" alt="Profile Image" draggable="false">
 		</div>
 	</div>
 </section>

@@ -1,0 +1,37 @@
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Database credentials
+config.local.php
+
+# Logs
+*.log
+logs/
+cache/
+tmp/
+temp/
+
+# Backups
+*.zip
+*.tar
+*.gz
+backup/
+backups/
+
+# User uploaded files
+user_uploads/
+
+# Dependencies
+node_modules/
+vendor/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local development
+xampp/

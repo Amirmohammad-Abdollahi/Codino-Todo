@@ -4,7 +4,7 @@ export async function add_task_dropdown() {
   if (!parent_box) return;
 
   try {
-    const response = await fetch("get-info/get-task-dropdown.php");
+    const response = await fetch("api/get-task-dropdown.php");
 
     if (!response) {
       throw new Error("Failed to fetch tasks");
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     real_time: localStorage.getItem("focus-time-now"),
   };
 
-  const response = await fetch("php-sql/set_real_time_db.php", {
+  const response = await fetch("api/set_real_time_db.php", {
     method: "post",
     headers: {
       "Content-Type": "application/json",

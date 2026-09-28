@@ -122,7 +122,7 @@ if (!in_array($week_start, $allowedWeekStart, true)) {
 // Avatar Upload
 
 
-$dbAvatar = "Images/default-avatar.png";
+$dbAvatar = "asset/default-avatar.png";
 
 $stmtProfile = $pdo->prepare("
 		SELECT avatar
@@ -289,7 +289,7 @@ try {
 
 		if (
 			$oldAvatar &&
-			$oldAvatar !== "Images/default-avatar.png" &&
+			$oldAvatar !== "asset/default-avatar.png" &&
 			$oldAvatar !== $dbAvatar
 		) {
 			$oldFile = __DIR__ . "/" . $oldAvatar;

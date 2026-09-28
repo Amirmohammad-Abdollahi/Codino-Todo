@@ -191,7 +191,7 @@ async function loadChart(data_target) {
   showChartState("loading", "Loading chart...");
 
   try {
-    const response = await fetch("php-sql/set-chart-info.php", {
+    const response = await fetch("api/set-chart-info.php", {
       method: "POST",
 
       headers: {

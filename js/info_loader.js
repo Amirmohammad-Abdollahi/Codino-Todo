@@ -334,7 +334,7 @@ async function initializeWorkspace() {
   });
 
   await runStep("user", async () => {
-    const userResult = await fetchJSON("php-sql/get_user.php", 6000);
+    const userResult = await fetchJSON("api/get_user.php", 6000);
 
     if (userResult.success && userResult.data?.user) {
       const user = userResult.data.user;
@@ -362,7 +362,7 @@ async function initializeWorkspace() {
   await runStep("tasks", async () => {
 
     try {
-      const goalResult = await fetchJSON("get-info/get_goal.php", 6000);
+      const goalResult = await fetchJSON("api/get_goal.php", 6000);
 
       if (goalResult.code === "GOAL_LOADED") {
         const goal = goalResult.data?.goal;
@@ -454,7 +454,7 @@ async function initializeWorkspace() {
 
 async function loadStreak(showMessage) {
   try {
-    const streakResult = await fetchJSON("get-info/get_streak.php", 6000);
+    const streakResult = await fetchJSON("api/get_streak.php", 6000);
 
     if (
       streakResult.success &&
