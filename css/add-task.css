@@ -1,6 +1,6 @@
-/* ===========================
+/* 
    Modal
-=========================== */
+ */
 
 .modal_edit {
   position: fixed;
@@ -36,9 +36,9 @@
   transition: opacity 250ms ease;
 }
 
-/* ===========================
+/* 
    Form
-=========================== */
+ */
 
 .todo-form {
   position: relative;
@@ -65,9 +65,9 @@
     transform 250ms ease;
 }
 
-/* ===========================
+/* 
    Fields
-=========================== */
+ */
 
 .field {
   display: flex;
@@ -137,9 +137,9 @@ select.field__input {
   background-repeat: no-repeat;
 }
 
-/* ===========================
+/* 
    Button
-=========================== */
+ */
 
 .todo-form__submit {
   margin-top: 0.5rem;

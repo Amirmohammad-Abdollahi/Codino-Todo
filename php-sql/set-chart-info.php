@@ -21,11 +21,8 @@ function Response(
 
 $user_id = getUserId();
 
-
-// کاربر مهمان / تازه‌وارد
 $isGuest = empty($user_id);
 
-// برای Queryها مقدار امن
 $query_user_id = $isGuest ? 0 : $user_id;
 
 

@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("click", async (e) => {
   const delete_note_btn = e.target.closest(".delete_mess_note");
-  if (!delete_note_btn) return; // ← اگر روی دکمه حذف نبود، برگرد
+  if (!delete_note_btn) return;
 
   e.preventDefault();
   e.stopPropagation();
@@ -89,7 +89,7 @@ document.addEventListener("click", async (e) => {
   const response = await fetch("get-info/delete_note.php", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json", // ← تایپو اصلاح شد
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ id_note }),
   });
@@ -157,20 +157,19 @@ note_object.add_note_form.addEventListener("submit", async (e) => {
   if (result.success) {
     load_note_mess();
     hide_note_modal();
-  }else {
-      const message_box = document.querySelector(".message-box-container");
-      if (message_box.dataset.log == "in" || result.message != "") {
-
-        const message_box_text = document.querySelector(
-          ".message-box-container p",
-        );
-        message_box_text.textContent = result.message;
-        message_box.dataset.view = "show";
-        if (message_box.dataset.view == "show") {
-          setInterval(() => {
-            message_box.dataset.view = "hide";
-          }, 5000);
-        }
+  } else {
+    const message_box = document.querySelector(".message-box-container");
+    if (message_box.dataset.log == "in" || result.message != "") {
+      const message_box_text = document.querySelector(
+        ".message-box-container p",
+      );
+      message_box_text.textContent = result.message;
+      message_box.dataset.view = "show";
+      if (message_box.dataset.view == "show") {
+        setInterval(() => {
+          message_box.dataset.view = "hide";
+        }, 5000);
       }
+    }
   }
 });

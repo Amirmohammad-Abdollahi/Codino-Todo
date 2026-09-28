@@ -43,7 +43,6 @@ export function startStep(stepName) {
     return;
   }
 
-  // حذف active از همه مراحل
   STEP_ORDER.forEach((name) => {
     const currentStep = getStep(name);
 
@@ -52,7 +51,6 @@ export function startStep(stepName) {
     }
   });
 
-  // اگر قبلاً done شده، دوباره active نکن
   if (state.done.has(stepName)) {
     return;
   }
@@ -102,9 +100,6 @@ export function finishLoader() {
 
   state.finished = true;
 
-  // خیلی مهم:
-  // بدون توجه به اینکه چه چیزی موفق یا ناموفق بوده،
-  // UI لودر را مستقیماً کامل می‌کنیم.
   forceCompleteAllSteps();
 
   const progress = getProgress();
@@ -128,7 +123,6 @@ export function finishLoader() {
 
   console.log("LOADER FINISH");
 
-  // اجازه می‌دهیم آخرین تغییرات DOM یک فریم رندر شوند
   requestAnimationFrame(() => {
     setTimeout(() => {
       const loader = getLoader();

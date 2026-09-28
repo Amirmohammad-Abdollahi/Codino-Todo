@@ -1,6 +1,6 @@
-// ========================================
+
 // UI Elements
-// ========================================
+
 const ui = {
   html: document.documentElement,
   themeToggle: document.querySelector(".theme-toggle"),
@@ -22,9 +22,9 @@ const ui = {
   subtitle: document.querySelector(".greeting-subtitle p"),
 };
 
-// ========================================
+
 // Theme Toggle
-// ========================================
+
 const Theme =
   localStorage.getItem("theme") ??
   (window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -39,9 +39,9 @@ ui.themeToggle?.addEventListener("click", () => {
   localStorage.setItem("theme", ui.html.dataset.theme);
 });
 
-// ========================================
+
 // Clock
-// ========================================
+
 function updateClock() {
   const now = new Date();
 
@@ -57,9 +57,9 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-// ========================================
+
 // Date
-// ========================================
+
 function updateToday() {
   const now = new Date();
 
@@ -76,9 +76,9 @@ function updateToday() {
 
 updateToday();
 
-// ========================================
+
 // Dynamic Greeting
-// ========================================
+
 const greeting = {
   update() {
     const hour = new Date().getHours();
@@ -99,10 +99,8 @@ const greeting = {
   },
 };
 
-// اجرا هنگام لود صفحه
 greeting.update();
 
-// هر یک دقیقه بررسی شود
 setInterval(() => {
   greeting.update();
 }, 60000);

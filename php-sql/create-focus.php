@@ -5,13 +5,9 @@ declare(strict_types=1);
 require_once "config.php";
 require_once "cookie.php";
 
-// ------------------------------------------------------------------
-// HELPERS
-// ------------------------------------------------------------------
 
-/**
- * Sends a JSON response and stops execution.
- */
+// HELPERS
+
 function response(bool $success, string $message = "", int $statusCode = 200): void
 {
 	http_response_code($statusCode);
@@ -21,11 +17,6 @@ function response(bool $success, string $message = "", int $statusCode = 200): v
 	], JSON_UNESCAPED_UNICODE));
 }
 
-/**
- * Reads and validates the JSON request body.
- *
- * @return array<string, mixed>
- */
 function readRequestBody(): array
 {
 	$raw = file_get_contents("php://input");
@@ -39,15 +30,15 @@ function readRequestBody(): array
 	return is_array($data) ? $data : [];
 }
 
-// ------------------------------------------------------------------
+
 // CONSTANTS (match your DB schema)
-// ------------------------------------------------------------------
+
 const MAX_TASK_LENGTH = 200;
 const FOCUS_DEFAULT_STATE = "stop";
 
-// ------------------------------------------------------------------
+
 // MAIN LOGIC
-// ------------------------------------------------------------------
+
 
 $user_id = getUserId();
 
@@ -57,10 +48,8 @@ if ($user_id === null) {
 
 $data = readRequestBody();
 
-// --- Validate time -------------------------------------------------
 $totalSeconds = $data["total_seconds"] ?? null;
 
-// int/float/string representation of a positive number
 $totalSeconds = filter_var($totalSeconds, FILTER_VALIDATE_INT, [
 	"options" => [
 		"min_range" => 1,
@@ -72,7 +61,6 @@ if ($totalSeconds === false) {
 	response(false, "Invalid focus duration. Must be between 1 and 86400 seconds.", 422);
 }
 
-// --- Validate task -------------------------------------------------
 $selectedTask = trim((string)($data["select_task"] ?? ""));
 
 if ($selectedTask === "") {
@@ -83,9 +71,9 @@ if (mb_strlen($selectedTask, "UTF-8") > MAX_TASK_LENGTH) {
 	response(false, "Task is too long (max " . MAX_TASK_LENGTH . " characters).", 422);
 }
 
-// ------------------------------------------------------------------
+
 // INSERT INTO DATABASE
-// ------------------------------------------------------------------
+
 
 try {
 	$stmt = $pdo->prepare(

@@ -34,10 +34,6 @@ const NORMAL_STREAK_CODES = [
   "PROFILE_NOT_COMPLETED",
 ];
 
-/* --------------------------------------------------
-   Helpers
--------------------------------------------------- */
-
 function getRemainingTime(deadline) {
   const now = new Date();
   const end = new Date(deadline);
@@ -259,10 +255,6 @@ async function fetchJSON(url, ms = 6000) {
   }
 }
 
-/* --------------------------------------------------
-   Loader Step Runner
--------------------------------------------------- */
-
 async function runStep(stepName, work) {
   startStep(stepName);
 
@@ -271,14 +263,9 @@ async function runStep(stepName, work) {
   } catch (error) {
     console.error(`LOADER STEP ERROR [${stepName}]`, error);
   } finally {
-    // این finally عمداً تضمین می‌کند step گیر نکند
     completeStep(stepName);
   }
 }
-
-/* --------------------------------------------------
-   Message
--------------------------------------------------- */
 
 function setupMessageBox() {
   const messageBox = document.querySelector(".message-box-container");
@@ -309,21 +296,16 @@ function setupMessageBox() {
   };
 }
 
-/* --------------------------------------------------
-   Main Loader
--------------------------------------------------- */
 
 async function initializeWorkspace() {
   const { showMessage } = setupMessageBox();
 
-  /* Focus state */
   try {
     localStorage.setItem("focus-state", "stop");
   } catch (error) {
     console.error("focus-state error:", error);
   }
 
-  /* Dynamic imports */
   let load_note_mess = async () => {};
   let goal_input_value = () => {};
 
@@ -347,17 +329,9 @@ async function initializeWorkspace() {
     console.error("export-input-value.js import error:", error);
   }
 
-  /* ==================================================
-     STEP 1 - INIT
-  ================================================== */
-
   await runStep("init", async () => {
     await paintDelay(120);
   });
-
-  /* ==================================================
-     STEP 2 - USER
-  ================================================== */
 
   await runStep("user", async () => {
     const userResult = await fetchJSON("php-sql/get_user.php", 6000);
@@ -385,12 +359,7 @@ async function initializeWorkspace() {
     }
   });
 
-  /* ==================================================
-     STEP 3 - TASKS / WORKSPACE
-  ================================================== */
-
   await runStep("tasks", async () => {
-    /* ---------------- GOAL ---------------- */
 
     try {
       const goalResult = await fetchJSON("get-info/get_goal.php", 6000);
@@ -453,15 +422,11 @@ async function initializeWorkspace() {
       console.error("get_goal.php error:", error);
     }
 
-    /* ---------------- NOTES ---------------- */
-
     try {
       await withTimeout(() => load_note_mess(), 5000, "load_note_mess");
     } catch (error) {
       console.error("load_note_mess error:", error);
     }
-
-    /* ---------------- FOCUS TASK ---------------- */
 
     try {
       const focusTaskElement = document.querySelector(".focus-task p");
@@ -476,33 +441,16 @@ async function initializeWorkspace() {
     }
   });
 
-  /* ==================================================
-     STEP 4 - READY
-  ================================================== */
-
   await runStep("ready", async () => {
     await paintDelay(120);
   });
 
-  /*
-   * مهم:
-   * حتی اگر چیزی در بالا غیرمنتظره خراب شده باشد،
-   * لودر نباید روی صفحه بماند.
-   */
-  finishLoader();
 
-  /* ==================================================
-     BACKGROUND DATA
-     این‌ها دیگر نباید مانع باز شدن صفحه شوند.
-  ================================================== */
+  finishLoader();
 
   loadStreak(showMessage);
   loadGoalInput(goal_input_value);
 }
-
-/* --------------------------------------------------
-   Background: Streak
--------------------------------------------------- */
 
 async function loadStreak(showMessage) {
   try {
@@ -528,10 +476,6 @@ async function loadStreak(showMessage) {
   }
 }
 
-/* --------------------------------------------------
-   Background: Goal Input
--------------------------------------------------- */
-
 function loadGoalInput(goal_input_value) {
   try {
     goal_input_value();
@@ -540,19 +484,9 @@ function loadGoalInput(goal_input_value) {
   }
 }
 
-/* --------------------------------------------------
-   Start
--------------------------------------------------- */
-
 function start() {
   initializeWorkspace().catch((error) => {
     console.error("Workspace initialization error:", error);
-
-    /*
-     * حتی اگر خود initializeWorkspace
-     * یک خطای پیش‌بینی‌نشده داشته باشد،
-     * لودر باز هم باید بسته شود.
-     */
     finishLoader();
   });
 }

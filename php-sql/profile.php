@@ -14,9 +14,9 @@ function response($success, $message, $data = [])
 }
 
 
-// =========================
+
 // Check Request
-// =========================
+
 
 if (
 	!isset($_POST["display_name"]) ||
@@ -28,9 +28,9 @@ if (
 }
 
 
-// =========================
+
 // User ID
-// =========================
+
 
 $user_id = getUserId();
 
@@ -39,9 +39,9 @@ if (!$user_id) {
 }
 
 
-// =========================
+
 // Validate Display Name
-// =========================
+
 
 $display_name = trim($_POST["display_name"]);
 
@@ -58,9 +58,9 @@ if (mb_strlen($display_name) > 50) {
 }
 
 
-// =========================
+
 // Validate Daily Goal
-// =========================
+
 
 $daily_goal = trim($_POST["daily_goal"]);
 
@@ -76,9 +76,9 @@ if ($daily_goal && mb_strlen($daily_goal) > 255) {
 }
 
 
-// =========================
+
 // Validate Focus
-// =========================
+
 
 $allowedFocus = [
 	"development",
@@ -98,9 +98,9 @@ if (!in_array($focus, $allowedFocus, true)) {
 }
 
 
-// =========================
+
 // Validate Week Start
-// =========================
+
 
 $allowedWeekStart = [
 	"saturday",
@@ -118,9 +118,9 @@ if (!in_array($week_start, $allowedWeekStart, true)) {
 }
 
 
-// =========================
+
 // Avatar Upload
-// =========================
+
 
 $dbAvatar = "Images/default-avatar.png";
 
@@ -240,9 +240,9 @@ if (
 	$dbAvatar = "Uploads/avatars/" . $fileName;
 }
 
-// =========================
+
 // Database
-// =========================
+
 
 
 try {

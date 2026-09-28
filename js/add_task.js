@@ -547,9 +547,6 @@ const Ui_content = {
   stat_value: document.querySelector(".stat-value"),
 };
 
-// ========================================
-// Get Progress From PHP
-// ========================================
 async function progress() {
   try {
     const response = await fetch("get-info/get_progress.php");
@@ -576,7 +573,6 @@ async function progress() {
 
     const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-    // نوار پیشرفت
     if (Ui_content.progressFill) {
       Ui_content.progressFill.style.width = `${percent}%`;
     }
@@ -585,12 +581,10 @@ async function progress() {
       Ui_content.stat_value.textContent = `${completed} / ${total}`;
     }
 
-    // متن کنار نوار
     if (Ui_content.progress_goal_value) {
       Ui_content.progress_goal_value.textContent = `${percent}%`;
     }
 
-    // ذخیره برای Progress
     if (Ui_content.progressWrapper) {
       Ui_content.progressWrapper.dataset.progress = percent;
     }
@@ -601,9 +595,6 @@ async function progress() {
   }
 }
 
-// ========================================
-// Progress Circle
-// ========================================
 const Progress = {
   circle: Ui_content.progressCircle,
 
@@ -655,14 +646,12 @@ const Progress = {
 
       const progress = Math.min(elapsed / duration, 1);
 
-      // حرکت نرم
       const ease = 1 - Math.pow(1 - progress, 3);
 
       const currentOffset = startOffset + (targetOffset - startOffset) * ease;
 
       this.circle.style.strokeDashoffset = currentOffset;
 
-      // عدد وسط دایره
       if (this.text) {
         const currentPercent = Math.round(percent * ease);
 

@@ -1,6 +1,3 @@
-/* ========================================
-   DESIGN SYSTEM - CSS VARIABLES
-======================================== */
 :root {
   /* Spacing Scale */
   --spacing-xs: 0.25rem;
@@ -42,9 +39,9 @@
   --z-tooltip: 1100;
 }
 
-/* ========================================
+/*
    LIGHT THEME
-======================================== */
+*/
 [data-theme="light"] {
   /* Background */
   --bg-primary: #f6f8fc;
@@ -121,16 +118,14 @@
 
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  --gradient-surface: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.8),
-    rgba(255, 255, 255, 0.4)
-  );
+  --gradient-surface: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0.4));
 }
 
-/* ========================================
+/*
    DARK THEME
-======================================== */
+*/
 [data-theme="dark"] {
   /* Background */
   --bg-primary: #0b1220;
@@ -206,9 +201,7 @@
   --bright: rgba(255, 255, 255, 0.05);
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  --gradient-surface: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.04),
-    rgba(255, 255, 255, 0)
-  );
+  --gradient-surface: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0));
 }

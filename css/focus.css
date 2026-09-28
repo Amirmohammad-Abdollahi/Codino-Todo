@@ -64,17 +64,17 @@
   height: 20px;
 }
 
-/* ========================================
+/* 
    FOCUS BUTTONS
-======================================== */
+ */
 
 .focus-buttons {
   width: 100%;
 }
 
-/* ========================================
+/* 
    BUTTON GROUPS
-======================================== */
+ */
 
 .focus-buttons-stop,
 .focus-buttons-active {
@@ -92,9 +92,9 @@
   display: none;
 }
 
-/* ========================================
+/* 
    COMMON BUTTON
-======================================== */
+ */
 
 .focus-start-btn,
 .focus-reset-btn,
@@ -118,9 +118,9 @@
     opacity var(--transition-fast);
 }
 
-/* ========================================
+/* 
    BUTTON ICONS
-======================================== */
+ */
 
 .focus-start-btn svg,
 .focus-reset-btn svg,
@@ -131,9 +131,9 @@
   flex-shrink: 0;
 }
 
-/* ========================================
+/* 
    START BUTTON
-======================================== */
+ */
 
 .focus-start-btn {
   flex: 1;
@@ -149,9 +149,9 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* ========================================
+/* 
    RESET BUTTON
-======================================== */
+ */
 
 .focus-reset-btn {
   padding: 0.7rem var(--spacing-xl);
@@ -165,9 +165,9 @@
   font-weight: 500;
 }
 
-/* ========================================
+/* 
    STOP BUTTON
-======================================== */
+ */
 
 .focus-stop-btn {
   flex: 1;
@@ -181,9 +181,9 @@
   font-weight: 500;
 }
 
-/* ========================================
+/* 
    PAUSE / RESUME BUTTON
-======================================== */
+ */
 
 .focus-pause-btn {
   flex: 1;
@@ -199,9 +199,9 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* ========================================
+/* 
    GRADIENT BUTTON CONTENT
-======================================== */
+ */
 
 .focus-start-btn,
 .focus-pause-btn {
@@ -213,17 +213,17 @@
   color: #fff;
 }
 
-/* ========================================
+/* 
    PAUSE / RESUME ICON
-======================================== */
+ */
 
 .focus-resume-icon {
   display: none;
 }
 
-/* ========================================
+/* 
    HOVER
-======================================== */
+ */
 
 .focus-start-btn:hover,
 .focus-reset-btn:hover,
@@ -232,9 +232,9 @@
   transform: translateY(-1px);
 }
 
-/* ========================================
+/* 
    ACTIVE
-======================================== */
+ */
 
 .focus-start-btn:active,
 .focus-reset-btn:active,
@@ -243,9 +243,9 @@
   transform: translateY(0);
 }
 
-/* ========================================
+/* 
    FOCUS
-======================================== */
+ */
 
 .focus-start-btn:focus-visible,
 .focus-reset-btn:focus-visible,
@@ -255,9 +255,9 @@
   box-shadow: var(--focus-ring);
 }
 
-/* ========================================
+/* 
    DISABLED
-======================================== */
+ */
 
 .focus-start-btn:disabled,
 .focus-reset-btn:disabled,
@@ -268,10 +268,6 @@
   transform: none;
 }
 
-/* ========================================
-   STATE: STOP
-======================================== */
-
 .focus-buttons[data-state="stop"] .focus-buttons-stop {
   display: flex;
 }
@@ -280,10 +276,6 @@
   display: none;
 }
 
-/* ========================================
-   STATE: START
-======================================== */
-
 .focus-buttons[data-state="start"] .focus-buttons-stop {
   display: none;
 }
@@ -291,10 +283,6 @@
 .focus-buttons[data-state="start"] .focus-buttons-active {
   display: flex;
 }
-
-/* ========================================
-   STATE: PENDING
-======================================== */
 
 .focus-buttons[data-state="pending"] .focus-buttons-stop {
   display: none;
@@ -346,15 +334,6 @@
 
   filter: url(#focus-glow);
 
-  /*
-        محیط دایره تقریباً:
-
-        2 × π × 82
-        ≈ 515
-
-        بنابراین این مقدار برای dasharray استفاده می‌شود.
-    */
-
   stroke-dasharray: 515;
 
   stroke-dashoffset: 0;
@@ -402,10 +381,6 @@
   justify-content: space-evenly;
 }
 
-/* ========================================
-   FOCUS SESSION MODAL
-======================================== */
-
 .focus-session-modal {
   position: fixed;
   inset: 0;
@@ -421,10 +396,6 @@
   overflow: hidden;
   transition: all 300ms ease;
 }
-
-/* ========================================
-   BACKDROP
-======================================== */
 
 .focus-session-backdrop {
   position: absolute;
@@ -448,10 +419,6 @@
   background: transparent;
 }
 
-/* ========================================
-   CARD
-======================================== */
-
 .focus-session-card {
   position: relative;
 
@@ -472,10 +439,6 @@
   z-index: 1;
 }
 
-/* ========================================
-   HEADER
-======================================== */
-
 .focus-session-header {
   display: flex;
   align-items: center;
@@ -494,10 +457,6 @@
 
   min-width: 0;
 }
-
-/* ========================================
-   ICON
-======================================== */
 
 .focus-session-icon {
   width: 42px;
@@ -526,10 +485,6 @@
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 75%, transparent)) drop-shadow(0 0 9px color-mix(in srgb, var(--accent-purple) 45%, transparent));
 }
 
-/* ========================================
-   TITLE
-======================================== */
-
 .focus-session-title-content {
   min-width: 0;
 }
@@ -554,10 +509,6 @@
 
   line-height: 1.4;
 }
-
-/* ========================================
-   CLOSE
-======================================== */
 
 .focus-session-close {
   width: 34px;
@@ -608,20 +559,12 @@
   box-shadow: var(--focus-ring);
 }
 
-/* ========================================
-   FORM
-======================================== */
-
 .focus-session-form {
   display: flex;
   flex-direction: column;
 
   gap: var(--spacing-xl);
 }
-
-/* ========================================
-   SECTION
-======================================== */
 
 .focus-session-section {
   display: flex;
@@ -651,10 +594,6 @@
 
   font-size: var(--text-xs);
 }
-
-/* ========================================
-   TASK SELECT
-======================================== */
 
 .focus-task-input-box {
   position: relative;
@@ -716,10 +655,6 @@
   transform: translateY(8px);
   max-height: 15rem;
 }
-
-/* ======================================
-   Scrollbar
-	====================================== */
 
 .focus-task-dropdown::-webkit-scrollbar {
   width: var(--spacing-xs);
@@ -813,9 +748,6 @@
   box-shadow: 2px 2px 10px -4px #000000;
 }
 
-/* ========================================
-   DURATION PICKER
-======================================== */
 
 .focus-session-duration-picker {
   width: 100%;
@@ -829,10 +761,6 @@
 
   gap: var(--spacing-sm);
 }
-
-/* ========================================
-   WHEEL
-======================================== */
 
 .focus-session-wheel {
   min-width: 0;
@@ -851,10 +779,6 @@
 
   text-align: center;
 }
-
-/* ========================================
-   WHEEL VIEWPORT
-======================================== */
 
 .focus-session-wheel-viewport {
   --wheel-item-height: 32px;
@@ -897,10 +821,6 @@
   cursor: grabbing;
 }
 
-/* ========================================
-   WHEEL LIST
-======================================== */
-
 .focus-session-wheel-list {
   position: absolute;
 
@@ -926,10 +846,6 @@
 .focus-session-wheel-list::-webkit-scrollbar {
   display: none;
 }
-
-/* ========================================
-   WHEEL ITEM
-======================================== */
 
 .focus-session-wheel-item {
   width: 100%;
@@ -972,18 +888,10 @@
   -webkit-user-drag: none;
 }
 
-/* ========================================
-   SELECTED
-======================================== */
-
 .focus-session-wheel-item.is-selected {
   color: var(--text-primary);
   font-weight: 700;
 }
-
-/* ========================================
-   NEAR ITEMS
-======================================== */
 
 .focus-session-wheel-item.is-near {
   color: var(--text-secondary);
@@ -993,10 +901,6 @@
   transform: scale(0.94);
 }
 
-/* ========================================
-   FAR ITEMS
-======================================== */
-
 .focus-session-wheel-item.is-far {
   color: var(--text-muted);
 
@@ -1005,27 +909,15 @@
   transform: scale(0.84);
 }
 
-/* ========================================
-   VERY FAR / DISABLED VISUAL
-======================================== */
-
 .focus-session-wheel-item.is-very-far {
   opacity: 0.08;
 
   transform: scale(0.78);
 }
 
-/* ========================================
-   NO BLUE SELECTION BOX
-======================================== */
-
 .focus-session-wheel-viewport::before {
   display: none;
 }
-
-/* ========================================
-   TOP / BOTTOM FADE
-======================================== */
 
 .focus-session-wheel-viewport::after {
   content: "";
@@ -1053,10 +945,6 @@
       var(--bg-surface) 100%);
 }
 
-/* ========================================
-   SEPARATOR
-======================================== */
-
 .focus-session-time-separator {
   align-self: center;
 
@@ -1070,10 +958,6 @@
 
   user-select: none;
 }
-
-/* ========================================
-   SUBMIT
-======================================== */
 
 .focus-session-submit {
   width: 100%;
@@ -1127,10 +1011,6 @@
     0 8px 24px rgb(59 130 246 / 0.2);
 }
 
-/* ========================================
-   SUBMIT ICON
-======================================== */
-
 .focus-session-submit-icon {
   width: 20px;
   height: 20px;
@@ -1139,10 +1019,6 @@
 
   flex-shrink: 0;
 }
-
-/* ========================================
-   EMPTY TASK MESSAGE
-======================================== */
 
 #focus-task-empty-message {
   width: 100%;
@@ -1173,10 +1049,6 @@
   animation: focusTaskEmptyIn 300ms ease both;
 }
 
-/* ========================================
-   ICON
-======================================== */
-
 .focus-task-empty-icon {
   width: 46px;
   height: 46px;
@@ -1204,10 +1076,6 @@
 
   filter: drop-shadow(0 0 5px color-mix(in srgb, var(--primary) 45%, transparent));
 }
-
-/* ========================================
-   CONTENT
-======================================== */
 
 .focus-task-empty-content {
   display: flex;
@@ -1241,10 +1109,6 @@
 
   line-height: 1.7;
 }
-
-/* ========================================
-   ANIMATION
-======================================== */
 
 @keyframes focusTaskEmptyIn {
   from {

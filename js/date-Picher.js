@@ -51,9 +51,7 @@ class DatePicker {
     this.bindEvents();
   }
 
-  // =====================================
   // Events
-  // =====================================
 
   bindEvents() {
     // Toggle button
@@ -62,7 +60,6 @@ class DatePicker {
     });
 
     // Input
-    // Directly open instead of toggle to prevent focus + click double toggle
     this.input.addEventListener("click", () => {
       this.open();
     });
@@ -145,9 +142,7 @@ class DatePicker {
     );
   }
 
-  // =====================================
   // Open / Close
-  // =====================================
 
   open() {
     this.panel.hidden = false;
@@ -183,9 +178,7 @@ class DatePicker {
     }
   }
 
-  // =====================================
   // Picker Views
-  // =====================================
 
   hidePickers() {
     this.monthContainer.hidden = true;
@@ -201,9 +194,7 @@ class DatePicker {
     this.renderMonths();
   }
 
-  // =====================================
   // Render
-  // =====================================
 
   render() {
     this.monthText.textContent = this.monthNames[this.current.getMonth()];
@@ -213,9 +204,7 @@ class DatePicker {
     this.renderDays();
   }
 
-  // =====================================
   // Render Days
-  // =====================================
 
   renderDays() {
     this.daysContainer.innerHTML = "";
@@ -229,9 +218,7 @@ class DatePicker {
 
     const prevMonthDays = new Date(year, month, 0).getDate();
 
-    // -------------------------------------
     // Previous month days
-    // -------------------------------------
 
     for (let i = firstDay; i > 0; i--) {
       const btn = this.createDay(prevMonthDays - i + 1, true);
@@ -239,9 +226,7 @@ class DatePicker {
       this.daysContainer.append(btn);
     }
 
-    // -------------------------------------
     // Current month days
-    // -------------------------------------
 
     for (let day = 1; day <= daysInMonth; day++) {
       const btn = this.createDay(day);
@@ -280,9 +265,7 @@ class DatePicker {
       this.daysContainer.append(btn);
     }
 
-    // -------------------------------------
     // Next month days
-    // -------------------------------------
 
     const total = firstDay + daysInMonth;
 
@@ -295,9 +278,7 @@ class DatePicker {
     }
   }
 
-  // =====================================
   // Create Day
-  // =====================================
 
   createDay(number, outside = false) {
     const btn = document.createElement("button");
@@ -316,9 +297,7 @@ class DatePicker {
     return btn;
   }
 
-  // =====================================
   // Render Months
-  // =====================================
 
   renderMonths() {
     this.monthContainer.innerHTML = "";
@@ -348,9 +327,7 @@ class DatePicker {
     });
   }
 
-  // =====================================
   // Render Years
-  // =====================================
 
   renderYears() {
     this.yearContainer.innerHTML = "";
@@ -382,9 +359,7 @@ class DatePicker {
     }
   }
 
-  // =====================================
   // Update Input
-  // =====================================
 
   updateInput() {
     if (!this.selected) {
@@ -401,9 +376,7 @@ class DatePicker {
     this.input.value = `${y}-${m}-${d}`;
   }
 
-  // =====================================
   // Position Panel
-  // =====================================
 
   positionPanel() {
     const rect = this.input.getBoundingClientRect();
@@ -424,7 +397,6 @@ class DatePicker {
       left = 12;
     }
 
-    // If there is not enough room below,
     // show panel above input
     if (top + panelHeight > window.innerHeight - 12) {
       top = rect.top - panelHeight - 12;
@@ -440,9 +412,7 @@ class DatePicker {
   }
 }
 
-// =====================================
 // Initialize Date Pickers
-// =====================================
 
 document.querySelectorAll(".date-picker").forEach((picker) => {
   new DatePicker(picker);

@@ -8,7 +8,6 @@
   display: flex;
 }
 
-/* فقط وقتی مودال بازه نمایش داده بشه */
 .modal-wrapper[data-modal="show"] {
   pointer-events: all;
 }
@@ -28,7 +27,6 @@
   transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* وقتی مودال باز میشه */
 .modal-wrapper[data-modal="show"] .modal-content {
   opacity: 1;
   transform: translateY(0);
@@ -198,18 +196,10 @@
   font-weight: 600;
 }
 
-/* ==========================
-   Date Picker
-========================== */
-
 .date-picker {
   position: relative;
   width: 100%;
 }
-
-/*==========================
-Input
-==========================*/
 
 .date-picker__input-wrapper {
   position: relative;
@@ -264,10 +254,6 @@ Input
   height: 18px;
 }
 
-/*==========================
-Panel
-==========================*/
-
 .date-picker__panel {
   position: absolute;
 
@@ -311,10 +297,6 @@ Panel
 
   transform: translateY(0) scale(1);
 }
-
-/*==========================
-Header
-==========================*/
 
 .date-picker__header {
   display: flex;
@@ -394,10 +376,6 @@ Header
   height: 18px;
 }
 
-/*==========================
-Week
-==========================*/
-
 .date-picker__weekdays {
   display: grid;
 
@@ -420,10 +398,6 @@ Week
   font-weight: 700;
 }
 
-/*==========================
-Days
-==========================*/
-
 .date-picker__days {
   display: grid;
 
@@ -433,8 +407,6 @@ Days
 
   padding: 12px;
 }
-
-/* هر روز */
 
 .date-picker__day {
   aspect-ratio: 1;
@@ -466,15 +438,11 @@ Days
   box-shadow: var(--focus-ring);
 }
 
-/* امروز */
-
 .date-picker__day.is-today {
   border: 1px solid var(--primary);
 
   font-weight: 700;
 }
-
-/* انتخاب شده */
 
 .date-picker__day.is-selected {
   background: var(--gradient-primary);
@@ -482,25 +450,17 @@ Days
   color: white;
 }
 
-/* خارج از ماه */
-
 .date-picker__day.is-outside {
   color: var(--text-muted);
 
   opacity: 0.45;
 }
 
-/* غیرفعال */
-
 .date-picker__day:disabled {
   cursor: not-allowed;
 
   opacity: 0.25;
 }
-
-/*==========================
-Months
-==========================*/
 
 .date-picker__months {
   display: grid;
@@ -537,10 +497,6 @@ Months
 
   color: white;
 }
-
-/*==========================
-Years
-==========================*/
 
 .date-picker__years {
   display: grid;
@@ -582,9 +538,6 @@ Years
   color: white;
 }
 
-/*==========================
-Footer
-==========================*/
 
 .date-picker__footer {
   display: flex;
@@ -627,10 +580,6 @@ Footer
   color: white;
 }
 
-/*==========================
-Scrollbar
-==========================*/
-
 .date-picker__years::-webkit-scrollbar {
   width: 8px;
 }
@@ -641,7 +590,6 @@ Scrollbar
   border-radius: 999px;
 }
 
-/* دکمه‌ها */
 .modal-actions {
   display: flex;
   gap: var(--spacing-md);
@@ -671,7 +619,6 @@ Scrollbar
   font-weight: 700;
 }
 
-/* بک‌دراپ */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -683,7 +630,6 @@ Scrollbar
   pointer-events: none;
 }
 
-/* وقتی مودال بازه بک‌دراپ هم نمایش داده بشه */
 .modal-wrapper[data-modal="show"] .modal-backdrop {
   opacity: 1;
   pointer-events: auto;

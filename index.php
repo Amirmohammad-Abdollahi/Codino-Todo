@@ -60,7 +60,7 @@ if (!$user) {
 			<main class="main-content">
 				<section class="card todo-list">
 
-					<!-- ================= Header ================= -->
+					<!--  Header  -->
 
 					<header class="todo-header">
 
@@ -112,7 +112,7 @@ if (!$user) {
 					</header>
 
 
-					<!-- ================= Toolbar ================= -->
+					<!--  Toolbar  -->
 
 					<div class="todo-toolbar">
 
@@ -379,7 +379,7 @@ if (!$user) {
 						</div>
 
 					</div>
-					<!-- ================= Body ================= -->
+					<!--  Body  -->
 
 					<div class="todo-body">
 
@@ -389,7 +389,7 @@ if (!$user) {
 					</div>
 
 
-					<!-- ================= Footer ================= -->
+					<!--  Footer  -->
 					<footer class="todo-footer">
 
 						<button

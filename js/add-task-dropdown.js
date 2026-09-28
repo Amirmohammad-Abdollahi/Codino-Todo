@@ -12,10 +12,6 @@ export async function add_task_dropdown() {
 
     const result = await response.json();
 
-    // ========================================
-    // CLEAR PREVIOUS ITEMS
-    // ========================================
-
     parent_box
       .querySelectorAll(".select-focus-task-dropdown")
       .forEach((item) => item.remove());
@@ -25,10 +21,6 @@ export async function add_task_dropdown() {
     if (empty_message) {
       empty_message.remove();
     }
-
-    // ========================================
-    // NO TASKS
-    // ========================================
 
     if (!result.success && result.count) {
       parent_box.insertAdjacentHTML(
@@ -76,12 +68,8 @@ export async function add_task_dropdown() {
       return;
     }
 
-    // ========================================
-    // ERROR
-    // ========================================
-
     if (!result.success) {
-const message_box = document.querySelector(".message-box-container");
+      const message_box = document.querySelector(".message-box-container");
       if (message_box.dataset.log == "in" || result.message != "") {
         const message_box_text = document.querySelector(
           ".message-box-container p",
@@ -96,10 +84,6 @@ const message_box = document.querySelector(".message-box-container");
       }
       return;
     }
-
-    // ========================================
-    // ADD TASKS
-    // ========================================
 
     const tasks = result.data;
 

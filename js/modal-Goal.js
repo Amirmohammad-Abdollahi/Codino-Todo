@@ -1,5 +1,4 @@
 const editGoalModal = {
-  // دکمه‌ها و المان‌های مودال
   openBtn: document.querySelector(".goal-edit-btn"),
   modal: document.querySelector(".modal-wrapper"),
   closeBtn: document.querySelector(".modal-close"),
@@ -7,18 +6,14 @@ const editGoalModal = {
   backdrop: document.querySelector(".modal-backdrop"),
   btnPrimary: document.querySelector(".btn-primary"),
 
-  // فیلد عنوان
   titleInput: document.querySelector("#goalTitle"),
   titleCountSpan: document.querySelector(".char-title-count span"),
   titleCountWrapper: document.querySelector(".char-title-count"),
 
-  // فیلد توضیحات
   descriptionInput: document.querySelector("#goalDescription"),
   descriptionCountSpan: document.querySelector(".char-description-count span"),
   descriptionCountWrapper: document.querySelector(".char-description-count"),
 };
-
-// ==================== باز و بسته کردن مودال ====================
 
 function showModal() {
   if (editGoalModal.modal) {
@@ -32,7 +27,6 @@ function hideModal() {
   }
 }
 
-// اتصال رویدادها
 if (editGoalModal.openBtn && editGoalModal.modal) {
   editGoalModal.openBtn.addEventListener("click", showModal);
 }
@@ -52,8 +46,6 @@ if (editGoalModal.backdrop) {
 editGoalModal.openBtn.addEventListener("click", () => {
   showModal();
 });
-
-// ==================== شمارنده کاراکتر ====================
 
 function updateCharacterCount(
   inputElement,
@@ -75,14 +67,11 @@ function updateCharacterCount(
     }
   };
 
-  // مقدار اولیه موقع لود
   update();
 
-  // موقع تایپ
   inputElement.addEventListener("input", update);
 }
 
-// راه‌اندازی شمارنده‌ها
 updateCharacterCount(
   editGoalModal.titleInput,
   editGoalModal.titleCountSpan,

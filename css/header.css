@@ -1,4 +1,3 @@
-/* ================== هدر ================== */
 .app-header {
   align-items: center;
   background-color: var(--bg-secondary);
@@ -56,7 +55,6 @@
   top: -2.5rem;
 }
 
-/* ================== هدر ویجت‌ها (Header Widgets) - BEM ================== */
 .header-widget {
   align-items: center;
   display: flex;
@@ -94,7 +92,6 @@
   font-size: var(--text-xs);
 }
 
-/* ================== پروفایل ================== */
 .profile {
   flex-shrink: 0;
   height: 4rem;
@@ -129,7 +126,6 @@
   transition: box-shadow 0.3s ease;
 }
 
-/* ================== تم (Theme Toggle) ================== */
 .theme-widget {
   align-items: center;
   display: flex;
@@ -195,7 +191,6 @@
   color: #ffffff;
 }
 
-/* ================== تاریخ و ساعت (Date & Time Widgets) ================== */
 .date-widget,
 .time-widget {
   color: var(--text-primary);
@@ -208,7 +203,6 @@
   height: 50px;
 }
 
-/* ================== استریک (Streak Widget) ================== */
 .streak-widget {
   color: var(--text-primary);
 }
@@ -235,7 +229,6 @@
   font-size: var(--text-xs);
 }
 
-/* ================== پیشرفت (Progress Widget) ================== */
 .progress-widget {
   display: flex;
   align-items: center;
@@ -300,20 +293,17 @@
   font-size: var(--text-xs);
 }
 
-/* ================== آیکون‌های SVG در هدر ================== */
 .header-widget__icon svg,
 .header-widget__icon object {
   width: 100%;
   height: 100%;
 }
 
-/* استایل خاص برای آیکون fire */
 .streak-widget .header-widget__icon svg {
   width: 100%;
   height: 100%;
 }
 
-/* سمت چپ هدر */
 .greeting-title {
   display: flex;
   align-items: center;

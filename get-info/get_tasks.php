@@ -17,9 +17,6 @@ function Response(bool $success, string $message = "", array $data = []): void
 	]));
 }
 
-
-// دریافت فیلترها
-
 $sort = $_GET["sort"] ?? "newest";
 
 $status = $_GET["status"] ?? "all";

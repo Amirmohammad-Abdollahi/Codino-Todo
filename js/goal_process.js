@@ -14,7 +14,6 @@ function getRemainingTime(deadline) {
   const now = new Date();
   const end = new Date(deadline);
 
-  // اگر گذشته باشه
   if (end <= now) {
     return "Expired";
   }
@@ -25,19 +24,16 @@ function getRemainingTime(deadline) {
   let hours = end.getHours() - now.getHours();
   let minutes = end.getMinutes() - now.getMinutes();
 
-  // دقیقه
   if (minutes < 0) {
     minutes += 60;
     hours--;
   }
 
-  // ساعت
   if (hours < 0) {
     hours += 24;
     days--;
   }
 
-  // روز
   if (days < 0) {
     const previousMonth = new Date(
       end.getFullYear(),
@@ -49,7 +45,6 @@ function getRemainingTime(deadline) {
     months--;
   }
 
-  // ماه
   if (months < 0) {
     months += 12;
     years--;

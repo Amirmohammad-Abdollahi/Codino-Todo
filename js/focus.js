@@ -1,14 +1,12 @@
-// ========================================
 // FOCUS WHEELS
-// ========================================
 
 let Minute = "";
 let Second = "";
 let Hour = "";
 
-// ========================================
+
 // WHEEL LISTS
-// ========================================
+
 
 const wheelLists = {
   hour: document.querySelector('.focus-session-wheel-list[data-unit="hour"]'),
@@ -22,9 +20,9 @@ const wheelLists = {
   ),
 };
 
-// ========================================
+
 // WHEEL VIEWPORTS
-// ========================================
+
 
 const wheelViewports = {
   hour: wheelLists.hour?.parentElement ?? null,
@@ -34,15 +32,15 @@ const wheelViewports = {
   second: wheelLists.second?.parentElement ?? null,
 };
 
-// ========================================
+
 // WHEEL UNITS
-// ========================================
+
 
 const wheelUnits = ["hour", "minute", "second"];
 
-// ========================================
+
 // SELECTED TIME
-// ========================================
+
 
 const selectedTime = {
   hour: 0,
@@ -50,9 +48,9 @@ const selectedTime = {
   second: 0,
 };
 
-// ========================================
+
 // SNAP TIMERS
-// ========================================
+
 
 const snapTimers = {
   hour: null,
@@ -60,9 +58,9 @@ const snapTimers = {
   second: null,
 };
 
-// ========================================
+
 // WHEEL CONFIG
-// ========================================
+
 
 const wheelConfig = {
   hour: {
@@ -81,9 +79,9 @@ const wheelConfig = {
   },
 };
 
-// ========================================
+
 // SNAP STATE
-// ========================================
+
 
 const isSnapping = {
   hour: false,
@@ -91,9 +89,9 @@ const isSnapping = {
   second: false,
 };
 
-// ========================================
+
 // GENERATE WHEEL ITEMS
-// ========================================
+
 
 function generateWheelItems(unit) {
   const config = wheelConfig[unit];
@@ -123,9 +121,9 @@ function generateWheelItems(unit) {
   return html;
 }
 
-// ========================================
+
 // INSERT WHEEL ITEMS
-// ========================================
+
 
 wheelUnits.forEach((unit) => {
   const wheelList = wheelLists[unit];
@@ -137,9 +135,9 @@ wheelUnits.forEach((unit) => {
   wheelList.innerHTML = generateWheelItems(unit);
 });
 
-// ========================================
+
 // GET CLOSEST ITEM
-// ========================================
+
 
 function getClosestItem(wheelList, wheelViewport) {
   if (!wheelList || !wheelViewport) {
@@ -173,9 +171,9 @@ function getClosestItem(wheelList, wheelViewport) {
   return closestItem;
 }
 
-// ========================================
+
 // UPDATE WHEEL
-// ========================================
+
 
 function updateWheel(wheelList, wheelViewport, unit) {
   if (!wheelList || !wheelViewport) {
@@ -201,9 +199,9 @@ function updateWheel(wheelList, wheelViewport, unit) {
 
     const distance = Math.abs(itemCenter - viewportCenter);
 
-    // ========================================
+    
     // FIND CLOSEST
-    // ========================================
+    
 
     if (distance < closestDistance) {
       closestDistance = distance;
@@ -211,17 +209,17 @@ function updateWheel(wheelList, wheelViewport, unit) {
       closestItem = item;
     }
 
-    // ========================================
+    
     // VISUAL PROGRESS
-    // ========================================
+    
 
     const maxDistance = 64;
 
     const progress = Math.min(distance / maxDistance, 1);
 
-    // ========================================
+    
     // SCALE
-    // ========================================
+    
 
     const maxScale = 1.08;
 
@@ -229,9 +227,9 @@ function updateWheel(wheelList, wheelViewport, unit) {
 
     const scale = maxScale - (maxScale - minScale) * progress;
 
-    // ========================================
+    
     // OPACITY
-    // ========================================
+    
 
     const maxOpacity = 1;
 
@@ -239,9 +237,9 @@ function updateWheel(wheelList, wheelViewport, unit) {
 
     const opacity = maxOpacity - (maxOpacity - minOpacity) * progress;
 
-    // ========================================
+    
     // TEXT SHADOW
-    // ========================================
+    
 
     const minTxtShadow = 0;
 
@@ -249,9 +247,9 @@ function updateWheel(wheelList, wheelViewport, unit) {
 
     const txtShadow = maxTxtShadow - (maxTxtShadow - minTxtShadow) * progress;
 
-    // ========================================
+    
     // ROTATE X
-    // ========================================
+    
 
     const minRotateX = 70;
 
@@ -259,9 +257,9 @@ function updateWheel(wheelList, wheelViewport, unit) {
 
     const rotateX = maxRotateX - (maxRotateX - minRotateX) * progress;
 
-    // ========================================
+    
     // APPLY STYLES
-    // ========================================
+    
 
     item.style.transform = `
       scale(${scale})
@@ -280,9 +278,9 @@ function updateWheel(wheelList, wheelViewport, unit) {
     `;
   });
 
-  // ========================================
+  
   // SELECTED ITEM
-  // ========================================
+  
 
   if (closestItem) {
     closestItem.classList.add("is-selected");
@@ -291,9 +289,9 @@ function updateWheel(wheelList, wheelViewport, unit) {
   }
 }
 
-// ========================================
+
 // SNAP WHEEL
-// ========================================
+
 
 function snapWheel(unit) {
   const wheelList = wheelLists[unit];
@@ -324,7 +322,6 @@ function snapWheel(unit) {
     behavior: "smooth",
   });
 
-  // بعد از تمام شدن animation
   clearTimeout(snapTimers[unit]);
 
   snapTimers[unit] = setTimeout(() => {
@@ -336,9 +333,9 @@ function snapWheel(unit) {
   }, 450);
 }
 
-// ========================================
+
 // START SNAP TIMER
-// ========================================
+
 
 function startSnapTimer(unit) {
   if (isSnapping[unit]) {
@@ -352,9 +349,9 @@ function startSnapTimer(unit) {
   }, 120);
 }
 
-// ========================================
+
 // DRAG
-// ========================================
+
 
 function enableWheelDrag(unit) {
   const wheelList = wheelLists[unit];
@@ -365,7 +362,6 @@ function enableWheelDrag(unit) {
     return;
   }
 
-  // موبایل / Pointer Events
   wheelViewport.style.touchAction = "none";
 
   let isDragging = false;
@@ -374,9 +370,9 @@ function enableWheelDrag(unit) {
 
   let startScrollTop = 0;
 
-  // ========================================
+  
   // POINTER DOWN
-  // ========================================
+  
 
   wheelViewport.addEventListener("pointerdown", (event) => {
     clearTimeout(snapTimers[unit]);
@@ -394,9 +390,9 @@ function enableWheelDrag(unit) {
     wheelViewport.setPointerCapture(event.pointerId);
   });
 
-  // ========================================
+  
   // POINTER MOVE
-  // ========================================
+  
 
   wheelViewport.addEventListener("pointermove", (event) => {
     if (!isDragging) {
@@ -408,9 +404,9 @@ function enableWheelDrag(unit) {
     wheelList.scrollTop = startScrollTop - deltaY;
   });
 
-  // ========================================
+  
   // END DRAG
-  // ========================================
+  
 
   function endDrag(pointerId = null) {
     if (!isDragging) {
@@ -428,34 +424,34 @@ function enableWheelDrag(unit) {
     startSnapTimer(unit);
   }
 
-  // ========================================
+  
   // POINTER UP
-  // ========================================
+  
 
   wheelViewport.addEventListener("pointerup", (event) => {
     endDrag(event.pointerId);
   });
 
-  // ========================================
+  
   // POINTER CANCEL
-  // ========================================
+  
 
   wheelViewport.addEventListener("pointercancel", (event) => {
     endDrag(event.pointerId);
   });
 
-  // ========================================
+  
   // LOST POINTER CAPTURE
-  // ========================================
+  
 
   wheelViewport.addEventListener("lostpointercapture", () => {
     endDrag();
   });
 }
 
-// ========================================
+
 // MOUSE / TOUCH WHEEL
-// ========================================
+
 
 function enableWheelScroll(unit) {
   const wheelList = wheelLists[unit];
@@ -487,9 +483,9 @@ function enableWheelScroll(unit) {
   );
 }
 
-// ========================================
+
 // ITEM CLICK
-// ========================================
+
 
 function enableWheelItemClick(unit) {
   const wheelList = wheelLists[unit];
@@ -522,9 +518,9 @@ function enableWheelItemClick(unit) {
   });
 }
 
-// ========================================
+
 // KEYBOARD
-// ========================================
+
 
 function enableWheelKeyboard(unit) {
   const wheelList = wheelLists[unit];
@@ -589,9 +585,9 @@ function enableWheelKeyboard(unit) {
   });
 }
 
-// ========================================
+
 // SCROLL DETECTION
-// ========================================
+
 
 function enableWheelScrollDetection(unit) {
   const wheelList = wheelLists[unit];
@@ -615,9 +611,9 @@ function enableWheelScrollDetection(unit) {
   );
 }
 
-// ========================================
+
 // SET WHEEL VALUE
-// ========================================
+
 
 function setWheelValue(unit, value) {
   const wheelList = wheelLists[unit];
@@ -650,9 +646,9 @@ function setWheelValue(unit, value) {
   });
 }
 
-// ========================================
+
 // GET SELECTED TIME
-// ========================================
+
 
 function getSelectedTime() {
   return {
@@ -664,9 +660,9 @@ function getSelectedTime() {
   };
 }
 
-// ========================================
+
 // GET SELECTED TIME IN SECONDS
-// ========================================
+
 
 function getSelectedTimeInSeconds() {
   return (
@@ -674,9 +670,9 @@ function getSelectedTimeInSeconds() {
   );
 }
 
-// ========================================
+
 // FORMAT SELECTED TIME
-// ========================================
+
 
 function formatSelectedTime() {
   const hour = String(selectedTime.hour).padStart(2, "0");
@@ -688,9 +684,9 @@ function formatSelectedTime() {
   return `${hour}:${minute}:${second}`;
 }
 
-// ========================================
+
 // INITIALIZE WHEELS
-// ========================================
+
 
 wheelUnits.forEach((unit) => {
   if (!wheelLists[unit] || !wheelViewports[unit]) {
@@ -710,9 +706,9 @@ wheelUnits.forEach((unit) => {
   updateWheel(wheelLists[unit], wheelViewports[unit], unit);
 });
 
-// ========================================
+
 // SET INITIAL VALUES
-// ========================================
+
 
 setWheelValue("hour", 0);
 
@@ -720,9 +716,9 @@ setWheelValue("minute", 25);
 
 setWheelValue("second", 0);
 
-// ========================================
+
 // UPDATE AFTER INITIAL SCROLL
-// ========================================
+
 
 requestAnimationFrame(() => {
   wheelUnits.forEach((unit) => {
@@ -730,9 +726,9 @@ requestAnimationFrame(() => {
   });
 });
 
-// ========================================
+
 // UPDATE AFTER RESIZE
-// ========================================
+
 
 let resizeTimer = null;
 
@@ -746,9 +742,9 @@ window.addEventListener("resize", () => {
   }, 100);
 });
 
-// ========================================
+
 // TASK DROPDOWN
-// ========================================
+
 
 const taskDropdownObject = {
   taskSelectBtn: document.querySelector(".focus-session-task-select"),
@@ -762,15 +758,15 @@ const taskDropdownObject = {
   focusResetBtn: document.querySelector(".focus-reset-btn"),
 };
 
-// ========================================
+
 // SELECTED FOCUS TASK
-// ========================================
+
 
 let selectedFocusTask = "";
 
-// ========================================
+
 // SHOW TASK DROPDOWN
-// ========================================
+
 
 async function show_select_task_dropdown() {
   const dropdown = taskDropdownObject.taskDropdown;
@@ -784,9 +780,9 @@ async function show_select_task_dropdown() {
   await loadFocusTasks();
 }
 
-// ========================================
+
 // HIDE TASK DROPDOWN
-// ========================================
+
 
 function hide_select_task_dropdown() {
   const dropdown = taskDropdownObject.taskDropdown;
@@ -798,9 +794,9 @@ function hide_select_task_dropdown() {
   dropdown.dataset.dropdown = "hide";
 }
 
-// ========================================
+
 // FIND / CREATE FOCUS TASK LIST
-// ========================================
+
 
 function getFocusTaskList() {
   const dropdown = taskDropdownObject.taskDropdown;
@@ -822,9 +818,9 @@ function getFocusTaskList() {
   return taskList;
 }
 
-// ========================================
+
 // RENDER TASK MESSAGE
-// ========================================
+
 
 function renderFocusTaskMessage(message) {
   const taskList = getFocusTaskList();
@@ -844,9 +840,9 @@ function renderFocusTaskMessage(message) {
   taskList.appendChild(messageElement);
 }
 
-// ========================================
+
 // LOAD FOCUS TASKS
-// ========================================
+
 
 let focusTasksRequest = null;
 
@@ -857,13 +853,11 @@ async function loadFocusTasks() {
     return;
   }
 
-  // اگر درخواست قبلی هنوز در حال اجراست
   if (focusTasksRequest) {
     try {
       await focusTasksRequest;
       return;
     } catch {
-      // درخواست قبلی شکست خورده
     }
   }
 
@@ -908,9 +902,9 @@ async function loadFocusTasks() {
       throw new Error("Invalid task response.");
     }
 
-    // ========================================
+    
     // NO TASKS
-    // ========================================
+    
 
     if (result.data.length === 0) {
       renderFocusTaskMessage("There is no task");
@@ -918,9 +912,9 @@ async function loadFocusTasks() {
       return;
     }
 
-    // ========================================
+    
     // RENDER TASK LIST
-    // ========================================
+    
 
     taskList.innerHTML = "";
 
@@ -942,15 +936,13 @@ async function loadFocusTasks() {
       taskList.appendChild(button);
     });
 
-    // اگر response داده داشت
-    // ولی هیچ آیتم قابل نمایش نبود
     if (!taskList.children.length) {
       renderFocusTaskMessage("There is no task");
     }
 
-    // ========================================
+    
     // RESTORE PREVIOUS TASK
-    // ========================================
+    
 
     if (selectedFocusTask) {
       const previousTask = [
@@ -964,9 +956,9 @@ async function loadFocusTasks() {
       }
     }
 
-    // ========================================
+    
     // RESTORE FROM LOCAL STORAGE
-    // ========================================
+    
 
     if (!selectedFocusTask) {
       const storedTask = localStorage.getItem("focus-task");
@@ -997,9 +989,9 @@ async function loadFocusTasks() {
   }
 }
 
-// ========================================
+
 // SELECT TASK
-// ========================================
+
 
 document.addEventListener("click", (event) => {
   const task = event.target.closest(".select-focus-task-dropdown");
@@ -1023,9 +1015,9 @@ document.addEventListener("click", (event) => {
   hide_select_task_dropdown();
 });
 
-// ========================================
+
 // OPEN TASK DROPDOWN
-// ========================================
+
 
 if (taskDropdownObject.taskSelectBtn) {
   taskDropdownObject.taskSelectBtn.addEventListener("click", async () => {
@@ -1033,9 +1025,9 @@ if (taskDropdownObject.taskSelectBtn) {
   });
 }
 
-// ========================================
+
 // CLOSE TASK DROPDOWN
-// ========================================
+
 
 if (taskDropdownObject.taskCloseBtn) {
   taskDropdownObject.taskCloseBtn.addEventListener(
@@ -1044,9 +1036,9 @@ if (taskDropdownObject.taskCloseBtn) {
   );
 }
 
-// ========================================
+
 // FORM MODAL
-// ========================================
+
 
 const dropdownFormObject = {
   focusSessionModal: document.querySelector(".focus-session-modal"),
@@ -1058,9 +1050,9 @@ const dropdownFormObject = {
   focusSettingsBtn: document.querySelector(".focus-settings-btn"),
 };
 
-// ========================================
+
 // SHOW FOCUS MODAL
-// ========================================
+
 
 function showFocusDropdown() {
   const modal = dropdownFormObject.focusSessionModal;
@@ -1071,14 +1063,12 @@ function showFocusDropdown() {
 
   modal.dataset.view = "show";
 
-  // هنگام باز شدن Modal،
-  // Taskها را آماده کن.
   loadFocusTasks();
 }
 
-// ========================================
+
 // HIDE FOCUS MODAL
-// ========================================
+
 
 function hideFocusDropdown() {
   const modal = dropdownFormObject.focusSessionModal;
@@ -1090,9 +1080,9 @@ function hideFocusDropdown() {
   hide_select_task_dropdown();
 }
 
-// ========================================
+
 // CLOSE MODAL
-// ========================================
+
 
 if (dropdownFormObject.focusSessionClose) {
   dropdownFormObject.focusSessionClose.addEventListener(
@@ -1101,9 +1091,9 @@ if (dropdownFormObject.focusSessionClose) {
   );
 }
 
-// ========================================
+
 // CLICK BACKDROP
-// ========================================
+
 
 if (dropdownFormObject.focusSessionBackdrop) {
   dropdownFormObject.focusSessionBackdrop.addEventListener(
@@ -1112,9 +1102,9 @@ if (dropdownFormObject.focusSessionBackdrop) {
   );
 }
 
-// ========================================
+
 // OPEN MODAL
-// ========================================
+
 
 if (dropdownFormObject.focusSettingsBtn) {
   dropdownFormObject.focusSettingsBtn.addEventListener(
@@ -1123,9 +1113,9 @@ if (dropdownFormObject.focusSettingsBtn) {
   );
 }
 
-// ========================================
+
 // CLOSE TASK DROPDOWN OUTSIDE
-// ========================================
+
 
 document.addEventListener("click", (event) => {
   const clickedInsideTaskDropdown = event.target.closest(
@@ -1139,9 +1129,9 @@ document.addEventListener("click", (event) => {
   }
 });
 
-// ========================================
+
 // FORM SUBMIT
-// ========================================
+
 
 const focusForm = document.querySelector(".focus-session-form");
 
@@ -1149,21 +1139,21 @@ if (focusForm) {
   focusForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    // ========================================
+    
     // GET TIME
-    // ========================================
+    
 
     const totalSeconds = getSelectedTimeInSeconds();
 
-    // ========================================
+    
     // GET TASK
-    // ========================================
+    
 
     const task = selectedFocusTask.trim();
 
-    // ========================================
+    
     // VALIDATE TIME
-    // ========================================
+    
 
     if (totalSeconds <= 0) {
       alert("Please select a valid focus duration.");
@@ -1171,9 +1161,9 @@ if (focusForm) {
       return;
     }
 
-    // ========================================
+    
     // VALIDATE TASK
-    // ========================================
+    
 
     if (!task || task === "Select a task" || task === "There is no task") {
       alert("Please select a task.");
@@ -1181,9 +1171,9 @@ if (focusForm) {
       return;
     }
 
-    // ========================================
+    
     // REQUEST DATA
-    // ========================================
+    
 
     const focusData = {
       total_seconds: totalSeconds,
@@ -1191,9 +1181,9 @@ if (focusForm) {
       select_task: task,
     };
 
-    // ========================================
+    
     // SUBMIT BUTTON
-    // ========================================
+    
 
     const submitButton = focusForm.querySelector(".focus-session-submit");
 
@@ -1205,9 +1195,9 @@ if (focusForm) {
       submitButton.textContent = "Starting...";
     }
 
-    // ========================================
+    
     // SEND TO PHP
-    // ========================================
+    
 
     try {
       const response = await fetch("php-sql/create-focus.php", {
@@ -1228,9 +1218,9 @@ if (focusForm) {
 
       const result = await response.json();
 
-      // ========================================
+      
       // SERVER ERROR
-      // ========================================
+      
 
       if (!result || !result.success) {
         const message = result?.message || "Failed to create focus.";
@@ -1256,9 +1246,9 @@ if (focusForm) {
         return;
       }
 
-      // ========================================
+      
       // SAVE FOCUS DATA
-      // ========================================
+      
 
       localStorage.setItem("focus-task", focusData.select_task);
 
@@ -1266,9 +1256,9 @@ if (focusForm) {
 
       localStorage.setItem("focus-time-real", String(focusData.total_seconds));
 
-      // ========================================
+      
       // UPDATE SELECTED TASK
-      // ========================================
+      
 
       selectedFocusTask = focusData.select_task;
 
@@ -1278,9 +1268,9 @@ if (focusForm) {
         taskDropdownObject.taskPlaceholder.style.color = "var(--text-primary)";
       }
 
-      // ========================================
+      
       // UPDATE FOCUS TASK UI
-      // ========================================
+      
 
       const focusTaskText = document.querySelector(".focus-task p");
 
@@ -1288,15 +1278,15 @@ if (focusForm) {
         focusTaskText.textContent = focusData.select_task;
       }
 
-      // ========================================
+      
       // UPDATE TIMER
-      // ========================================
+      
 
       timer_down(focusData.total_seconds);
 
-      // ========================================
+      
       // SET STATE
-      // ========================================
+      
 
       setFocusState("stop");
 
@@ -1317,23 +1307,23 @@ if (focusForm) {
   });
 }
 
-// ========================================
+
 // FOCUS STATE
-// ========================================
+
 
 const focusStateKey = "focus-state";
 
-// ========================================
+
 // GET FOCUS STATE
-// ========================================
+
 
 function getFocusState() {
   return localStorage.getItem(focusStateKey) || "stop";
 }
 
-// ========================================
+
 // SET FOCUS STATE
-// ========================================
+
 
 function setFocusState(state) {
   const allowedStates = ["stop", "start", "pending"];
@@ -1345,9 +1335,9 @@ function setFocusState(state) {
   localStorage.setItem(focusStateKey, state);
 }
 
-// ========================================
+
 // ELEMENTS
-// ========================================
+
 
 const focusButtons = document.querySelector(".focus-buttons");
 
@@ -1365,9 +1355,9 @@ const focusPauseIcon = document.querySelector(".focus-pause-icon");
 
 const focusResumeIcon = document.querySelector(".focus-resume-icon");
 
-// ========================================
+
 // UPDATE FOCUS UI
-// ========================================
+
 
 function updateFocusUI() {
   const state = getFocusState();
@@ -1380,9 +1370,9 @@ function updateFocusUI() {
     return;
   }
 
-  // ========================================
+  
   // STOP
-  // ========================================
+  
 
   if (state === "stop") {
     focusPauseText.textContent = "Pause";
@@ -1394,9 +1384,9 @@ function updateFocusUI() {
     return;
   }
 
-  // ========================================
+  
   // START
-  // ========================================
+  
 
   if (state === "start") {
     focusPauseText.textContent = "Pause";
@@ -1408,9 +1398,9 @@ function updateFocusUI() {
     return;
   }
 
-  // ========================================
+  
   // PENDING
-  // ========================================
+  
 
   if (state === "pending") {
     focusPauseText.textContent = "Resume";
@@ -1421,9 +1411,9 @@ function updateFocusUI() {
   }
 }
 
-// ========================================
+
 // START FOCUS
-// ========================================
+
 
 if (focusStartBtn) {
   focusStartBtn.addEventListener("click", () => {
@@ -1439,9 +1429,9 @@ if (focusStartBtn) {
   });
 }
 
-// ========================================
+
 // PAUSE / RESUME
-// ========================================
+
 
 if (focusPauseBtn) {
   focusPauseBtn.addEventListener("click", () => {
@@ -1457,9 +1447,9 @@ if (focusPauseBtn) {
   });
 }
 
-// ========================================
+
 // PROGRESS CIRCLE
-// ========================================
+
 
 const progressCircle = document.querySelector(".focus-ring-progress");
 
@@ -1473,9 +1463,9 @@ if (progressCircle) {
   progressCircle.style.strokeDashoffset = String(circumference);
 }
 
-// ========================================
+
 // SET PROGRESS
-// ========================================
+
 
 function setProgress(percent) {
   if (!progressCircle) {
@@ -1489,9 +1479,9 @@ function setProgress(percent) {
   progressCircle.style.strokeDashoffset = String(offset);
 }
 
-// ========================================
+
 // TIMER DISPLAY
-// ========================================
+
 
 function timer_down(sec) {
   const hourDisplay = document.querySelector("#hour-span-txt");
@@ -1512,15 +1502,15 @@ function timer_down(sec) {
 
   sec = Math.max(0, Math.floor(sec));
 
-  // ========================================
+  
   // GET REAL TIME
-  // ========================================
+  
 
   const totalTime = Number(localStorage.getItem("focus-time-real"));
 
-  // ========================================
+  
   // UPDATE PROGRESS
-  // ========================================
+  
 
   if (Number.isFinite(totalTime) && totalTime > 0) {
     const progress = (sec / totalTime) * 100;
@@ -1530,9 +1520,9 @@ function timer_down(sec) {
     setProgress(0);
   }
 
-  // ========================================
+  
   // TIMER FINISHED
-  // ========================================
+  
 
   if (sec <= 0) {
     hourDisplay.textContent = "00";
@@ -1548,9 +1538,9 @@ function timer_down(sec) {
     return;
   }
 
-  // ========================================
+  
   // CALCULATE TIME
-  // ========================================
+  
 
   const hour = Math.floor(sec / 3600)
     .toString()
@@ -1562,9 +1552,9 @@ function timer_down(sec) {
 
   const second = (sec % 60).toString().padStart(2, "0");
 
-  // ========================================
+  
   // UPDATE UI
-  // ========================================
+  
 
   hourDisplay.textContent = hour;
 
@@ -1573,14 +1563,13 @@ function timer_down(sec) {
   secondDisplay.textContent = second;
 }
 
-// ========================================
+
 // TIMER
-// ========================================
+
 
 setInterval(() => {
   const state = getFocusState();
 
-  // فقط در حالت START
   if (state !== "start") {
     return;
   }
@@ -1605,9 +1594,9 @@ setInterval(() => {
     return;
   }
 
-  // ========================================
+  
   // FINISHED
-  // ========================================
+  
 
   if (currentTime <= 0) {
     localStorage.setItem("focus-time-now", "0");
@@ -1621,9 +1610,9 @@ setInterval(() => {
     return;
   }
 
-  // ========================================
+  
   // DECREASE
-  // ========================================
+  
 
   const newTime = Math.max(0, currentTime - 1);
 
@@ -1631,9 +1620,9 @@ setInterval(() => {
 
   timer_down(newTime);
 
-  // ========================================
+  
   // FINISHED
-  // ========================================
+  
 
   if (newTime <= 0) {
     setFocusState("stop");
@@ -1642,14 +1631,14 @@ setInterval(() => {
   }
 }, 1000);
 
-// ========================================
+
 // CLEAR FOCUS SESSION
-// ========================================
+
 
 async function clearFocusSession() {
-  // ========================================
+  
   // CLEAR LOCAL STORAGE
-  // ========================================
+  
 
   localStorage.setItem("focus-time-now", "0");
 
@@ -1659,9 +1648,9 @@ async function clearFocusSession() {
 
   selectedFocusTask = "";
 
-  // ========================================
+  
   // UPDATE TASK PLACEHOLDER
-  // ========================================
+  
 
   if (taskDropdownObject.taskPlaceholder) {
     taskDropdownObject.taskPlaceholder.textContent = "Select a task";
@@ -1669,9 +1658,9 @@ async function clearFocusSession() {
     taskDropdownObject.taskPlaceholder.style.color = "var(--text-muted)";
   }
 
-  // ========================================
+  
   // UPDATE MAIN TASK
-  // ========================================
+  
 
   const focusTaskText = document.querySelector(".focus-task p");
 
@@ -1679,33 +1668,33 @@ async function clearFocusSession() {
     focusTaskText.textContent = "There is no task";
   }
 
-  // ========================================
+  
   // STATE
-  // ========================================
+  
 
   setFocusState("stop");
 
-  // ========================================
+  
   // UPDATE TIMER
-  // ========================================
+  
 
   timer_down(0);
 
-  // ========================================
+  
   // UPDATE UI
-  // ========================================
+  
 
   updateFocusUI();
 
-  // ========================================
+  
   // HIDE MODAL / DROPDOWN
-  // ========================================
+  
 
   hide_select_task_dropdown();
 
-  // ========================================
+  
   // DELETE FROM DATABASE
-  // ========================================
+  
 
   try {
     const response = await fetch("delete-focus-db.php", {
@@ -1732,9 +1721,9 @@ async function clearFocusSession() {
   }
 }
 
-// ========================================
+
 // RESET BUTTON
-// ========================================
+
 
 if (taskDropdownObject.focusResetBtn) {
   taskDropdownObject.focusResetBtn.addEventListener("click", async (event) => {
@@ -1744,9 +1733,9 @@ if (taskDropdownObject.focusResetBtn) {
   });
 }
 
-// ========================================
+
 // STOP BUTTON
-// ========================================
+
 
 if (focusStopBtn) {
   focusStopBtn.addEventListener("click", async (event) => {
@@ -1756,9 +1745,9 @@ if (focusStopBtn) {
   });
 }
 
-// ========================================
+
 // INITIAL UI
-// ========================================
+
 
 const initialFocusTime = localStorage.getItem("focus-time-now") || 0;
 
@@ -1766,9 +1755,9 @@ timer_down(initialFocusTime);
 
 updateFocusUI();
 
-// ========================================
+
 // INITIAL TASK
-// ========================================
+
 
 const storedFocusTask = localStorage.getItem("focus-task");
 
@@ -1782,9 +1771,9 @@ if (storedFocusTask && storedFocusTask !== "There is no task") {
   }
 }
 
-// ========================================
+
 // INITIAL MAIN FOCUS TASK
-// ========================================
+
 
 const initialFocusTask = localStorage.getItem("focus-task");
 

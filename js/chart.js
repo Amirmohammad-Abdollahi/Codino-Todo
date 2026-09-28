@@ -397,9 +397,6 @@ async function loadChart(data_target) {
       productivityChart.update("active");
     }
   } catch (error) {
-    /*
-     * Abort شدن Request قبلی خطا نیست
-     */
     if (error.name === "AbortError") {
       return;
     }

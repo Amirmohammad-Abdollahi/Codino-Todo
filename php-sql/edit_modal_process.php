@@ -18,7 +18,6 @@ function jsonResponse(bool $success, string $message = "", array $data = []): vo
 
 try {
 
-	// اطلاعات فعلی هدف (ممکنه نباشه)
 	$stmt = $pdo->prepare("
         SELECT title, description, deadLine, priority, status
         FROM goal_edit
@@ -27,7 +26,6 @@ try {
 	$stmt->execute([$user_id]);
 	$currentGoal = $stmt->fetch();
 
-	// مقادیر پیش‌فرض اگه رکوردی نبود
 	$defaults = [
 		"title" => "",
 		"description" => "",
@@ -40,23 +38,23 @@ try {
 		$currentGoal = $defaults;
 	}
 
-	// =========================
+	
 	// Title
-	// =========================
+	
 	$goalTitle = trim($_POST["goalTitle"] ?? "");
 	if ($goalTitle === "") $goalTitle = $currentGoal["title"];
 	if (mb_strlen($goalTitle) > 80) jsonResponse(false, "Goal title cannot exceed 80 characters.");
 
-	// =========================
+	
 	// Description
-	// =========================
+	
 	$goalDescription = trim($_POST["goalDescription"] ?? "");
 	if ($goalDescription === "") $goalDescription = $currentGoal["description"];
 	if (mb_strlen($goalDescription) > 200) jsonResponse(false, "Description cannot exceed 200 characters.");
 
-	// =========================
+	
 	// Deadline
-	// =========================
+	
 	$goalDeadline = $_POST["goalDeadline"] ?? "";
 	if ($goalDeadline === "") {
 		$goalDeadline = $currentGoal["deadLine"];
@@ -67,9 +65,9 @@ try {
 		}
 	}
 
-	// =========================
+	
 	// Priority
-	// =========================
+	
 	$allowedPriority = ["High", "Medium", "Low"];
 	$priority = $_POST["btnPriority"] ?? "";
 	if ($priority === "") {
@@ -78,9 +76,9 @@ try {
 		jsonResponse(false, "Invalid priority.");
 	}
 
-	// =========================
+	
 	// Status
-	// =========================
+	
 	$allowedStatus = ["Pending", "Progress", "Completed"];
 	$status = $_POST["btnStatus"] ?? "";
 	if ($status === "") {
@@ -89,9 +87,9 @@ try {
 		jsonResponse(false, "Invalid status.");
 	}
 
-	// =========================
+	
 	// Insert or Update
-	// =========================
+	
 	$check = $pdo->prepare("SELECT user_id FROM goal_edit WHERE user_id = ?");
 	$check->execute([$user_id]);
 	$exists = $check->fetch();
@@ -112,7 +110,6 @@ try {
 		$stmt->execute([$user_id, $goalTitle, $goalDescription, $goalDeadline, $priority, $status]);
 	}
 
-	// گرفتن اطلاعات نهایی بعد از Update/Insert
 	$stmt = $pdo->prepare("
         SELECT title, description, deadLine, priority, status, updated_at
         FROM goal_edit
