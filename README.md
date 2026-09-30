@@ -581,7 +581,7 @@ htdocs/
     ├── api/
     ├── css/
     ├── js/
-    ├── Images/
+    ├── asset/
     ├── Uploads/
     ├── index.php
     └── ...
@@ -703,7 +703,7 @@ todo-app/
 │
 ├── css/
 ├── js/
-├── Images/
+├── asset/
 ├── Uploads/
 ├── index.php
 └── ...
@@ -717,7 +717,7 @@ The exact frontend file structure may evolve as the project continues to be impr
 
 ### Dashboard
 
-![Todo App Dashboard](assets/dashboard.png)
+![Todo App Dashboard](asset/dashboard.png)
 
 The dashboard brings the main productivity features together in a single workspace: daily tasks, the current goal, focus sessions, quick notes, and activity analytics.
 
