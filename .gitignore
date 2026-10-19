@@ -22,7 +22,8 @@ backups/
 
 # User uploaded files
 user_uploads/
-Uploads/avatars/
+/Uploads/avatars/*
+!/Uploads/avatars/.gitkeep
 
 # Dependencies
 node_modules/
