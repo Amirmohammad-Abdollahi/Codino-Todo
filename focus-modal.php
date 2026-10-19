@@ -122,7 +122,7 @@
 						</span>
 
 					</button>
-					<div class="focus-task-dropdown" data-dropdown="show">
+					<div class="focus-task-dropdown" data-dropdown="hide">
 						<div class="header-select-focus-dropdown">
 							<h4>Select a task</h4>
 							<p id="close-select-task-btn">&times;</p>

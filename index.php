@@ -486,10 +486,8 @@ if (!$user) {
 					<!-- Body -->
 					<div class="goal-body">
 						<div class="goal-content">
-							<h2 class="goal-name">Build and ship the new dashboard</h2>
-							<p class="goal-description">
-								Complete the remaining UI components and prepare the backend for live data.
-							</p>
+							<h2 class="goal-name">Give your goal a name</h2>
+							<p class="goal-description">Add a short description of what you'd like to achieve. You can fill this in whenever you're ready.</p>
 						</div>
 
 						<!-- Properties -->

@@ -675,6 +675,14 @@
   background: var(--gradient-primary);
 }
 
+.focus-task-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
 .select-focus-task-dropdown {
   display: flex;
   align-items: center;
