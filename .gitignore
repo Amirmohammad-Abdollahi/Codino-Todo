@@ -22,6 +22,7 @@ backups/
 
 # User uploaded files
 user_uploads/
+Uploads/avatars/
 
 # Dependencies
 node_modules/
